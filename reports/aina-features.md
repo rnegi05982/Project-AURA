@@ -86,7 +86,7 @@ Each line: what the source establishes, then the link. Primary sources (platform
 - Storebot-Google is Google Shopping's crawler; JavaScript-generated Product markup makes Shopping crawls "less frequent and less reliable": [List of Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) · [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
 - Google's AI optimization guide: structured data "isn't required"; Merchant Center feeds help products appear in AI responses; llms.txt not used: [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
 - Merchant listing markup requires the page to be the point of sale; Google recommends markup plus a Merchant Center feed: [Merchant listing (Product, Offer) structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing) · [Introduction to Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product)
-- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [github.com](https://github.com/Shopify/dawn) · [github.com](https://github.com/Shopify/horizon) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/products/studio-denim)
+- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [Shopify/dawn](https://github.com/Shopify/dawn) · [Shopify/horizon](https://github.com/Shopify/horizon) · [Dawn demo product page](https://theme-dawn-demo.myshopify.com/products/studio-denim)
 - For grounded Gemini, title match and inbound links associate with citations; schema.org and FAQ blocks show no effect; JS-only text gets fewer: [arxiv.org](https://arxiv.org/html/2610.15033v1)
 - Vendor quasi-experiment: adding JSON-LD did not raise AI Mode or AIO citations: [We Tracked 1,885 Pages Adding Schema. AI Citations Barely Moved.](https://ahrefs.com/blog/schema-ai-citations/)
 
@@ -96,7 +96,7 @@ Each line: what the source establishes, then the link. Primary sources (platform
 - ChatGPT channel eligibility: sells to US buyers, Catalog-eligible products, three policies: [Selling on ChatGPT](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/chatgpt)
 - Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
 - "Allow Shopify to manage for me" auto-enrolls stores in new AI channels: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
-- No OpenAI source documents ChatGPT shopping availability in India: [chatgpt.com](https://chatgpt.com/merchants/) · [help.openai.com](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search) · [openai.com](https://openai.com/index/expanding-access-to-ai-with-chatgpt-ads/)
+- No OpenAI source documents ChatGPT shopping availability in India: [chatgpt.com/merchants](https://chatgpt.com/merchants/) · [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search) · [OpenAI ads announcement](https://openai.com/index/expanding-access-to-ai-with-chatgpt-ads/)
 - India: Gemini app shopping in English and Hindi; AI Mode shopping in English, Hindi "soon" (2026-04-07): [New ways Google is using AI to make shopping easier](https://blog.google/intl/en-in/products/explore-communicate/new-ways-google-is-using-ai-to-make-shopping-easier/)
 - The app auto-opts stores into free listings; India is a supported sync and free-listings country: [Show your products for free on Google](https://support.google.com/merchants/answer/13692890?hl=en) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
 
@@ -121,7 +121,7 @@ Each line: what the source establishes, then the link. Primary sources (platform
 - Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
 - Google uses Merchant Center data "to match your products to the right queries"; missing data limits eligibility: [Product data specification](https://support.google.com/merchants/answer/7052112?hl=en)
 - Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
-- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [github.com](https://github.com/Shopify/dawn) · [github.com](https://github.com/Shopify/horizon) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/products/studio-denim)
+- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [Shopify/dawn](https://github.com/Shopify/dawn) · [Shopify/horizon](https://github.com/Shopify/horizon) · [Dawn demo product page](https://theme-dawn-demo.myshopify.com/products/studio-denim)
 - Global Catalog search takes a query, buyer context and filters; unavailable items are excluded by default: [Global Catalog MCP](https://shopify.dev/docs/agents/catalog/global-catalog)
 - Merchant list ordering: availability, price, quality, maker/primary seller: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
 
@@ -152,8 +152,8 @@ Each line: what the source establishes, then the link. Primary sources (platform
 ### 10 · Google AI Mode enrichment
 
 - Six optional "conversational attributes" target AI Mode: [How to use conversational attributes](https://support.google.com/merchants/answer/17085370?hl=en)
-- `question_and_answer` is "primarily intended" for AI Mode; Google extracts FAQs from `document_link` PDFs: [Question and answer [question_and_answer]](https://support.google.com/merchants/answer/17085211?hl=en)
-- `popularity_rank`: merchant-declared 0–100 sales popularity for AI Mode: [Popularity rank [popularity_rank]](https://support.google.com/merchants/answer/17085297?hl=en)
+- `question_and_answer` is "primarily intended" for AI Mode; Google extracts FAQs from `document_link` PDFs: [Question and answer attribute](https://support.google.com/merchants/answer/17085211?hl=en)
+- `popularity_rank`: merchant-declared 0–100 sales popularity for AI Mode: [Popularity rank attribute](https://support.google.com/merchants/answer/17085297?hl=en)
 - `related_product` and `variant_option` encode accessories, substitutes and variants: [Product data specification](https://support.google.com/merchants/answer/7052112?hl=en) · [Merchant Center setup](https://developers.google.com/merchant/ucp/guides/overview/merchant-center)
 - Brand-submitted conversational attributes appeared in 50% of relevant AI Mode recommendations (lululemon test): [Boost your holiday sales with these agentic commerce updates](https://blog.google/products-and-platforms/products/shopping/google-shopping-updates-holiday-shopping/)
 - Standard discovery metafields hold related and complementary products: [List of standard metafield definitions](https://shopify.dev/docs/apps/build/metafields/list-of-standard-definitions)
@@ -192,11 +192,11 @@ Each line: what the source establishes, then the link. Primary sources (platform
 
 ### Do not build
 
-- Every Shopify store serves `/agents.md`, `/llms.txt` and `/.well-known/ucp` by default: [Shopify Catalog and product discovery for agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/.well-known/ucp)
+- Every Shopify store serves `/agents.md`, `/llms.txt` and `/.well-known/ucp` by default: [Shopify Catalog and product discovery for agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products) · [Dawn demo UCP profile](https://theme-dawn-demo.myshopify.com/.well-known/ucp)
 - Google's AI optimization guide: structured data "isn't required"; Merchant Center feeds help products appear in AI responses; llms.txt not used: [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
 - For the OpenAI web-search API, retrieval explains far more of citation than page features: [What Drives AI Citations? Content, Retrieval and Model Knowledge in Generative Engine Optimization (GEO)](https://arxiv.org/abs/2610.15033)
 - UCP is co-developed by Shopify and Google; OpenAI is not listed; no source says ChatGPT uses UCP: [The agentic commerce platform](https://www.shopify.com/news/ai-commerce-at-scale) · [ucp.dev](https://ucp.dev/)
-- No OpenAI or ACP statement on UCP; Stripe and Meta sit on both governance bodies: [Universal Commerce Protocol](https://github.com/Universal-Commerce-Protocol/ucp) · [docs.stripe.com](https://docs.stripe.com/agentic-commerce/protocols/ucp.md)
+- No OpenAI or ACP statement on UCP; Stripe and Meta sit on both governance bodies: [Universal Commerce Protocol](https://github.com/Universal-Commerce-Protocol/ucp) · [Stripe UCP docs](https://docs.stripe.com/agentic-commerce/protocols/ucp.md)
 - Shopify product data reaches ChatGPT through Shopify Catalog with no merchant work: [Powering Product Discovery in ChatGPT](https://openai.com/index/powering-product-discovery-in-chatgpt/) · [Power product discovery in ChatGPT](https://chatgpt.com/merchants/)
 - Google: UCP native integration "does not influence how we rank your offers": [Frequently asked questions](https://developers.google.com/merchant/ucp/faq)
 - Ads run on separate systems and do not influence answers: [Ads in ChatGPT](https://help.openai.com/en/articles/20001047-ads-in-chatgpt)
