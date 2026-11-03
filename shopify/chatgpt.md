@@ -9,8 +9,8 @@ Status values (from the brief):
 - **Unverified** — no evidence it affects ChatGPT.
 
 Two separate paths reach ChatGPT for a Shopify store. Actions below say which path they touch:
-- **Catalog path:** Shopify Catalog → ChatGPT product results. US buyers only. Default-on [SHOP-001, CGPT-017].
-- **Web path:** OAI-SearchBot crawl and partner search → ChatGPT search answers and citations [CGPT-004, CGPT-006, SHOP-011].
+- **Catalog path:** Shopify Catalog → ChatGPT product results. US buyers only. Default-on <sup>[SHOP-001, CGPT-017]</sup>.
+- **Web path:** OAI-SearchBot crawl and partner search → ChatGPT search answers and citations <sup>[CGPT-004, CGPT-006, SHOP-011]</sup>.
 
 ---
 
@@ -32,7 +32,7 @@ Two separate paths reach ChatGPT for a Shopify store. Actions below say which pa
 | W1 | Allow `OAI-SearchBot` in robots.txt and at any CDN or firewall in front of the store. | OpenAI's stated eligibility condition for search inclusion. Opted-out sites appear only as navigational links. | CGPT-004, CGPT-006 | Fetch `/robots.txt`; search for `OAI-SearchBot` and any `User-agent: *` `Disallow: /`. Shopify's default allows it. |
 | W2 | If the theme has a custom `robots.txt.liquid`, re-check it. Custom templates do not inherit Shopify's default changes. | Large stores' custom files diverge from the default. | SHOP-017 | Compare live `/robots.txt` with a default Dawn store. |
 
-Note: blocking `GPTBot` (training) does not affect search [CGPT-007]. Blocking `ChatGPT-User` is not a documented visibility control [CGPT-008]. Both are merchant choices, not visibility actions.
+Note: blocking `GPTBot` (training) does not affect search <sup>[CGPT-007]</sup>. Blocking `ChatGPT-User` is not a documented visibility control <sup>[CGPT-008]</sup>. Both are merchant choices, not visibility actions.
 
 ---
 
@@ -75,4 +75,4 @@ Note: blocking `GPTBot` (training) does not affect search [CGPT-007]. Blocking `
 
 ## India-only stores
 
-A store that does not sell to the US is not eligible for the ChatGPT Catalog path [SHOP-003]. OpenAI documents no shopping results for India [CGPT-046]. For such a store only the web path applies: W1, W2, and the experimental items E2–E4. Run `experiments/test-cases/chatgpt-coffee-mug.md` from India before investing further.
+A store that does not sell to the US is not eligible for the ChatGPT Catalog path <sup>[SHOP-003]</sup>. OpenAI documents no shopping results for India <sup>[CGPT-046]</sup>. For such a store only the web path applies: W1, W2, and the experimental items E2–E4. Run `experiments/test-cases/chatgpt-coffee-mug.md` from India before investing further.

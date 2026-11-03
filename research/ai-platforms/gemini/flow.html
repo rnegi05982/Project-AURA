@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemini Discovery Flow</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d2125; --muted: #5f6670; --line: #b9c0c8; --chip: #d5dae0;
+    --d-bg: #e3f3e6; --d-bd: #2e8b47; --d-fg: #134d24;
+    --i-bg: #e5edfb; --i-bd: #3d6fd1; --i-fg: #173a7a;
+    --h-bg: #fdf0d9; --h-bd: #d18a1c; --h-fg: #5c3a00;
+    --u-bg: #eef0f2; --u-bd: #8a9199; --u-fg: #3a3f45;
+    --shop: #5e8e3e; --star: #c47f00;
+  }
+  /* light by default; the header button sets data-theme="dark" */
+  :root[data-theme="dark"] {
+    --bg: #121416; --card: #1b1e21; --ink: #e6e8ea; --muted: #9aa1a9; --line: #4a515a; --chip: #3a4047;
+    --d-bg: #15321e; --d-bd: #4fbf6b; --d-fg: #c8f0d2;
+    --i-bg: #172a4a; --i-bd: #6d9bf0; --i-fg: #d3e2ff;
+    --h-bg: #3a2a0c; --h-bd: #e6a640; --h-fg: #f8e2bb;
+    --u-bg: #2a2d31; --u-bd: #8a9199; --u-fg: #d5d9de;
+    --shop: #95bf47; --star: #f2b84b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .scroll { overflow-x: auto; padding: 24px 16px 40px; }
+  .page { min-width: 1120px; max-width: 1320px; margin: 0 auto; }
+  header h1 { font-size: 20px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; }
+  .theme { float: right; font: 12px system-ui, sans-serif; padding: 4px 10px; border-radius: 8px;
+           border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .legend { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 14px 0 22px; font-size: 12px; color: var(--muted); }
+  .legend .sep { width: 1px; height: 18px; background: var(--line); margin: 0 10px; }
+
+  /* chips: x = plain (non-merchant); d/i/h/u = merchant item, colored by confidence */
+  .c { display: inline-block; padding: 2px 8px; margin: 2px 3px 2px 0; border-radius: 10px;
+       border: 1px solid; font-size: 12px; line-height: 1.5; cursor: help; white-space: nowrap; }
+  .x { background: transparent; border-color: var(--chip); color: var(--ink); }
+  .x.q { border-style: dashed; border-color: var(--line); color: var(--muted); }
+  .d { background: var(--d-bg); border-color: var(--d-bd); color: var(--d-fg); }
+  .i { background: var(--i-bg); border-color: var(--i-bd); color: var(--i-fg); }
+  .h { background: var(--h-bg); border-color: var(--h-bd); color: var(--h-fg); }
+  .u { background: var(--u-bg); border-color: var(--u-bd); color: var(--u-fg); border-style: dashed; }
+  /* star = not used on the ChatGPT path (absent there, or only a hypothesis/unknown) */
+  .s { font-weight: 600; }
+  .s::before { content: "★ "; color: var(--star); }
+  /* no = documented as NOT used */
+  .no { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  .step h2, .path h3 { font-size: 14px; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; }
+  .n { display: inline-flex; justify-content: center; align-items: center; min-width: 22px; height: 22px;
+       border-radius: 11px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; }
+  .row { display: flex; gap: 14px; align-items: stretch; }
+  .row > .step { flex: 1; }
+  .aside { flex: 0 0 270px; border-style: dashed; color: var(--muted); }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 8px 0 2px; }
+  .label.shop { color: var(--shop); font-weight: 600; }
+  .label.shop::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+                        background: var(--shop); margin-right: 5px; vertical-align: 0; }
+
+  .arrow { display: flex; justify-content: center; height: 26px; }
+  .arrow svg { width: 14px; height: 26px; }
+  .arrow path, .fan line { stroke: var(--line); stroke-width: 2; fill: none; }
+  .arrow .head { fill: var(--line); stroke: none; }
+  .fan { display: block; width: 100%; height: 34px; }
+
+  .paths { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .path { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .path .via { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  .gather { text-align: center; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  footer { margin-top: 22px; font-size: 12px; color: var(--muted); }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="scroll"><div class="page">
+
+<header>
+  <button class="theme" id="theme" type="button">Dark mode</button>
+  <h1>Gemini, AI Mode, AI Overviews — product discovery flow</h1>
+  <p>As of 2026-10-31 · three Google surfaces, which "may use different models and techniques" · hover any item for evidence IDs · report: <code>report.md</code> · compare: <code>../chatgpt/flow.html</code></p>
+</header>
+
+<div class="legend">
+  <span class="label shop" style="margin:0 6px 0 0">Shopify / Merchant Center items</span>
+  <span class="c d" title="VERIFIED FACT: Google, Shopify or a cited study states it">documented</span>
+  <span class="c i" title="EVIDENCE-BASED INFERENCE: documented for a neighbouring Google surface (e.g. Shopping tab, free listings); use by the AI surfaces is not stated">inferred</span>
+  <span class="c h" title="UNVERIFIED HYPOTHESIS: plausible, untested">hypothesis</span>
+  <span class="c u" title="No source describes it">unknown</span>
+  <span class="c d s" title="Gemini uses it; the ChatGPT flow does not, or lists it only as a hypothesis or unknown">extra vs ChatGPT</span>
+  <span class="c d no" title="Google documents that it does not use this">not used</span>
+  <span class="sep"></span>
+  Other items:
+  <span class="c x" title="Documented">documented</span>
+  <span class="c x q" title="Inferred, hypothesis or unknown; the tooltip says which">not documented</span>
+</div>
+
+<!-- 0 -->
+<div class="step">
+  <h2><span class="n">0</span>User prompt</h2>
+  <span class="c x" title="Example query from the AURA brief">premium ceramic coffee mug under ₹1,000</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 1 -->
+<div class="row">
+  <div class="step">
+    <h2><span class="n">1</span>Surface and intent</h2>
+    <span class="c x" title="GEM-001 · documented: Gemini uses Shopping Graph for shopping">Gemini app</span>
+    <span class="c x" title="GEM-003 · documented: Gemini + Shopping Graph">AI Mode</span>
+    <span class="c x" title="GEM-004 · documented">AI Overviews</span>
+    <span class="c x" title="GEM-004 · documented">different models per surface</span>
+    <span class="c x" title="GEM-005 · documented (2026-05-20)">AI Mode default: Gemini 3.5 Flash</span>
+    <span class="c x" title="GEM-005 · documented (2026-05-20)">AIO + AI Mode: one UI</span>
+    <span class="c x" title="RES-038 · third-party measurement, logged-out US">AIO on 14–17% of product keywords</span>
+    <span class="c x" title="GEM-002 · documented (2026-04-07)">India: Gemini app EN/HI · AI Mode EN</span>
+    <span class="c x q" title="Unknown: model version per surface at a given time (report gap 11)">model version now</span>
+  </div>
+  <div class="step aside">
+    <h2>No shopping intent</h2>
+    <span class="c x" title="GEM-006, GOOG-029 · documented">answer grounded on Search</span>
+  </div>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 2 -->
+<div class="step">
+  <h2><span class="n">2</span>Query fan-out and context</h2>
+  <span class="c x" title="GEM-003 · documented: several simultaneous searches to derive product criteria">AI Mode: query fan-out</span>
+  <span class="c x" title="GEM-003, GEM-004 · documented">across multiple data sources</span>
+  <span class="c x" title="GEM-006 · documented: 'some' responses">Gemini app: Search grounding</span>
+  <span class="c x" title="GEM-011 · documented: Search, Shopping, Gmail, Photos, Wallet (US)">Personal Intelligence</span>
+  <span class="c x" title="GEM-011 · documented">AI Mode: Search history</span>
+  <span class="c x" title="GEM-012 · documented: US, CA, AU, India">saved favorite brands</span>
+  <span class="c x q" title="Inferred: GEM-001, GEM-003, GOOG-029">→ Shopping Graph + Search index</span>
+</div>
+
+<!-- 3 -->
+<svg class="fan" viewBox="0 0 1000 34" preserveAspectRatio="none">
+  <line x1="500" y1="0" x2="500" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="98" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="299" y1="17" x2="299" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="17" x2="500" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="701" y1="17" x2="701" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="902" y1="17" x2="902" y2="34" vector-effect="non-scaling-stroke"/>
+</svg>
+<p class="gather"><span class="n">3</span>&nbsp; Candidate sources · G1–G3 feed the Shopping Graph · G4 is the Search index</p>
+
+<div class="paths">
+  <!-- G1 -->
+  <div class="path">
+    <h3>G1 · Merchant Center feed</h3>
+    <div class="via">
+      <span class="c x" title="GOOG-010, GOOG-020 · documented">feed → free listings → Shopping Graph</span>
+      <span class="c x" title="GOOG-029 · documented: feeds help products appear in AI responses">named by Google for AI</span>
+    </div>
+    <div class="label shop">Gate</div>
+    <span class="c d s" title="SHOP-025, SHOP-029 · documented; ChatGPT flow: hypothesis only">Google &amp; YouTube app</span>
+    <span class="c d s" title="GOOG-010, SHOP-032 · documented; app auto-opts in">free listings ON</span>
+    <span class="c d s" title="GOOG-009 · documented: disapprovals and limited eligibility">no item disapprovals</span>
+    <span class="c d s" title="SHOP-030 · documented">options in English</span>
+    <span class="c d s" title="GOOG-016 · documented: enforced from 2027-01-31">images ≥ 500×500</span>
+    <span class="c d s" title="SHOP-032 · documented: India is a sync and free-listings country">sells in India OK</span>
+    <div class="label shop">Shopify → Merchant Center</div>
+    <span class="c d" title="SHOP-029, GOOG-009 · documented">title</span>
+    <span class="c d" title="SHOP-029, GOOG-009 · documented">description</span>
+    <span class="c d s" title="SHOP-030 · documented: channel can send them instead">SEO title · meta description</span>
+    <span class="c d" title="SHOP-029, GOOG-009 · documented">images</span>
+    <span class="c d" title="SHOP-029, GOOG-009 · documented">price</span>
+    <span class="c d" title="SHOP-029, GOOG-009 · documented">inventory → availability</span>
+    <span class="c d" title="SHOP-030 · documented">barcode → gtin</span>
+    <span class="c d" title="SHOP-030 · documented (default)">vendor → brand</span>
+    <span class="c d s" title="SHOP-030 · documented: needed when no GTIN">MPN · custom-product flag</span>
+    <span class="c d s" title="SHOP-030 · documented: Google assigns one if absent">Google product category</span>
+    <span class="c d s" title="SHOP-030 · documented: apparel; stored in mm-google-shopping metafields">age group · gender</span>
+    <span class="c d s" title="SHOP-029, SHOP-030 · documented: General profile only">shipping rates</span>
+    <div class="label shop">Merchant Center only</div>
+    <span class="c d s" title="GOOG-012, GOOG-013 · documented: 'primarily intended' for AI Mode">question_and_answer</span>
+    <span class="c d s" title="GOOG-013 · documented: Google extracts FAQs from PDFs">document_link</span>
+    <span class="c d s" title="GOOG-015 · documented">related_product</span>
+    <span class="c d s" title="GOOG-012, GOOG-015 · documented">item_group_title · variant_option</span>
+    <span class="c d s" title="GOOG-014 · documented: merchant-declared 0–100, for AI Mode">popularity_rank</span>
+    <span class="c d s" title="GOOG-016 · documented: videos appear in AI Mode">video_link</span>
+    <span class="c d s" title="GOOG-009 · documented spec attributes">product_highlight · product_detail</span>
+    <span class="c d s" title="SHOP-031 · documented: not synced by the app">return policy</span>
+    <span class="c i s" title="GOOG-023 · Google Customer Reviews, ~100 in 24 months; 'can help' free listings; AI use not stated">store ratings</span>
+    <span class="c i s" title="GOOG-021 · Store Quality: shipping speed, returns; 'may boost' Shopping tab; AI use not stated">Store Quality data</span>
+  </div>
+
+  <!-- G2 -->
+  <div class="path">
+    <h3>G2 · Web crawl → Shopping Graph</h3>
+    <div class="via">
+      <span class="c x" title="GOOG-031 · documented: Google Shopping's crawler">Storebot-Google</span>
+      <span class="c x" title="GOOG-010, GOOG-020 · documented">no feed needed</span>
+      <span class="c x" title="GOOG-020 · documented">reviews · YouTube</span>
+    </div>
+    <div class="label shop">Shopify storefront</div>
+    <span class="c d" title="SHOP-016 · documented: User-agent * Allow /">robots.txt allows all</span>
+    <span class="c d s" title="GOOG-034 · documented: falls back to *, not to a Googlebot group">Storebot-Google group</span>
+    <span class="c d s" title="GOOG-010 · documented: crawled products can show without markup or Merchant Center; ChatGPT flow: unknown">product page HTML</span>
+    <span class="c d s" title="GOOG-033, SHOP-022 · documented for merchant listings; ChatGPT flow: hypothesis">JSON-LD Product</span>
+    <span class="c d s" title="GOOG-033 · documented as recommended; SHOP-022: not in default theme">JSON-LD shipping · returns · rating</span>
+    <span class="c d s" title="GOOG-031 · documented: JS-generated markup makes crawls less reliable">server-rendered price · stock</span>
+  </div>
+
+  <!-- G3 -->
+  <div class="path">
+    <h3>G3 · Manufacturer Center</h3>
+    <div class="via">
+      <span class="c x" title="GOOG-020 · documented">brand data feed</span>
+      <span class="c x" title="GOOG-020 · documented">brands only</span>
+    </div>
+  </div>
+
+  <!-- G4 -->
+  <div class="path">
+    <h3>G4 · Search index</h3>
+    <div class="via">
+      <span class="c x" title="GOOG-026 · documented: no separate AI crawler">Googlebot</span>
+      <span class="c x" title="GOOG-029 · documented: core ranking systems">AIO / AI Mode citations</span>
+      <span class="c x" title="GEM-006, GOOG-027 · documented">Gemini app grounding</span>
+    </div>
+    <div class="label shop">Shopify storefront</div>
+    <span class="c d s" title="GOOG-026, SHOP-016 · documented; default allows">Googlebot allowed</span>
+    <span class="c d s" title="GOOG-011 · documented: the only page requirement">indexed + snippet-eligible</span>
+    <span class="c d s" title="GOOG-030 · documented: limits AIO/AI Mode input">nosnippet · max-snippet</span>
+    <span class="c d s" title="GOOG-027 · documented: Gemini app grounding; RES-039 never cited when blocked">Google-Extended allowed</span>
+    <span class="c d no" title="GOOG-029 · documented: Google Search does not use llms.txt">llms.txt · agents.md</span>
+    <div class="label shop">Search Console</div>
+    <span class="c d s" title="GOOG-028 · documented: default include; exclude removes the site from AIO and AI Mode">AI control: include</span>
+    <div class="label">Off-site</div>
+    <span class="c x q" title="RES-030, RES-042 · API and AIO studies">review sites · YouTube · Reddit</span>
+  </div>
+
+  <!-- G5 -->
+  <div class="path">
+    <h3>G5 · Model knowledge</h3>
+    <div class="via">
+      <span class="c x q" title="RES-032 · API study: brand sets most of the order before retrieval">brand priors</span>
+      <span class="c x q" title="Inferred: no live read">nothing live</span>
+    </div>
+    <div class="label shop">Shopify</div>
+    <span class="c d s" title="GOOG-027 · documented: training opt-out token; SHOP-016: allowed by default">Google-Extended (training)</span>
+  </div>
+</div>
+
+<svg class="fan" viewBox="0 0 1000 34" preserveAspectRatio="none">
+  <line x1="98" y1="0" x2="98" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="299" y1="0" x2="299" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="0" x2="500" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="701" y1="0" x2="701" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="902" y1="0" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="17" x2="500" y2="34" vector-effect="non-scaling-stroke"/>
+</svg>
+
+<!-- 4 -->
+<div class="step">
+  <h2><span class="n">4</span>Combine</h2>
+  <span class="c x" title="GOOG-019 · documented">Shopping Graph: 60B+ listings</span>
+  <span class="c x q" title="Unknown: report gap 3">feed vs crawl precedence</span>
+  <span class="c x q" title="Unknown: report gap 4">crawl-only products as cards</span>
+  <span class="c x q" title="Unknown: not documented">Graph + Search index merge</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 5 -->
+<div class="step">
+  <h2><span class="n">5</span>Eligibility</h2>
+  <span class="c x" title="GOOG-009 · documented">disapproved / limited items</span>
+  <span class="c x" title="GOOG-010 · documented">free listing ≠ display</span>
+  <span class="c x" title="GOOG-028 · documented">AI control exclude</span>
+  <span class="c x" title="GOOG-030 · documented">nosnippet</span>
+  <span class="c x" title="GOOG-018 · documented">no AI-only opt-out for listings</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 6 -->
+<div class="step">
+  <h2><span class="n">6</span>Selection</h2>
+  <span class="c x" title="GEM-007 · documented for AI Mode and AIO">"Search quality and ranking systems"</span>
+  <span class="c x q" title="Unknown: report gap 1">product factors for AI surfaces</span>
+  <span class="c x" title="GOOG-022 · documented for Google Shopping only">Shopping "Top recommendations": relevance · ratings · price · features</span>
+  <span class="c x" title="GEM-011, GEM-012 · documented">history · saved brands</span>
+  <span class="c x" title="GEM-007 · documented">ads don't influence organic</span>
+  <span class="label shop" style="margin-left:8px">Merchant</span>
+  <span class="c i s" title="GOOG-023 · 'can help' free listings; AI use not stated">store ratings</span>
+  <span class="c i s" title="GOOG-021 · 'may boost' Shopping tab; AI use not stated">shipping speed · returns</span>
+  <span class="c h s" title="GOOG-014 · intended for AI Mode; ranking effect untested (report gap 5)">popularity_rank → rank</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 7 -->
+<div class="row">
+  <div class="step">
+    <h2><span class="n">7</span>Presentation</h2>
+    <span class="c x" title="GEM-001, GEM-002 · documented">product cards · comparison tables</span>
+    <span class="c x" title="GEM-002 · documented">price · reviews · inventory</span>
+    <span class="c x" title="GEM-007 · documented">AIO: summary + cited links</span>
+    <span class="c x" title="GEM-008 · documented">sponsored items in AI Mode list</span>
+    <span class="label shop" style="margin-left:8px">Merchant</span>
+    <span class="c d s" title="GOOG-016 · documented">product videos</span>
+    <span class="c d s" title="GEM-013 · documented: used in 50% of relevant answers (lululemon test)">conversational attributes in answer</span>
+  </div>
+  <div class="step aside">
+    <h2>Ads</h2>
+    <span class="c x" title="GOOG-024 · documented">same feed · auto-eligible</span>
+    <span class="c x" title="GEM-009 · documented">Direct Offers · Highlighted Answers</span>
+    <span class="c x" title="GEM-010 · documented">Gemini app chats: no ads</span>
+  </div>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 8 -->
+<div class="step">
+  <h2><span class="n">8</span>Offer choice</h2>
+  <span class="c x q" title="GOOG-035 · unknown: no rule published">marketplace vs brand</span>
+  <span class="c x q" title="RES-046 · Tier 3 vendor study">lead offer often not lowest</span>
+  <span class="c x" title="GOOG-003 · documented">checkout doesn't change rank</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 9 -->
+<div class="step">
+  <h2><span class="n">9</span>Hand-off</h2>
+  <span class="c x" title="GEM-014 · documented: signed-in 18+, US, English">Buy on Google (UCP) · US</span>
+  <span class="c x" title="GEM-014 · documented (2026-10-15)">Universal Cart · US</span>
+  <span class="c x" title="GEM-015, GOOG-025 · documented">agentic checkout on merchant site</span>
+  <span class="c x" title="SHOP-026 · documented">link to merchant site</span>
+  <span class="c x" title="SHOP-027, GEM-016 · documented: Flipkart test only">India: no Google checkout</span>
+  <span class="label shop" style="margin-left:8px">Shopify</span>
+  <span class="c d s" title="SHOP-026, SHOP-027 · documented: US/CA/AU buyers; opting out keeps discovery">direct checkout ON (default)</span>
+  <span class="c d" title="SHOP-027 · documented">ToS · privacy · refund policy</span>
+  <span class="c d s" title="SHOP-031, GOOG-002 · documented: required for UCP checkout">return policy in Merchant Center</span>
+  <span class="c d s" title="SHOP-028 · documented">pixels · GA don't fire</span>
+</div>
+
+<footer>Evidence registry: <code>evidence/registry/</code> (GEM, GOOG, UCP, SHOP, RES). Colors show how sure the evidence is that Google uses a merchant item, not how much it affects ranking. ★ compares against <code>../chatgpt/flow.html</code>.</footer>
+
+</div></div>
+<script>
+  (function () {
+    var root = document.documentElement, btn = document.getElementById('theme');
+    function apply(t) {
+      if (t === 'dark') root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+      btn.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('aura-theme'); } catch (e) {}
+    apply(saved === 'dark' ? 'dark' : 'light');
+    btn.addEventListener('click', function () {
+      var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(t);
+      try { localStorage.setItem('aura-theme', t); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>

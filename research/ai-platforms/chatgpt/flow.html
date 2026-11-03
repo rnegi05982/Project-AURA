@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatGPT Discovery Flow</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d2125; --muted: #5f6670; --line: #b9c0c8; --chip: #d5dae0;
+    --d-bg: #e3f3e6; --d-bd: #2e8b47; --d-fg: #134d24;
+    --i-bg: #e5edfb; --i-bd: #3d6fd1; --i-fg: #173a7a;
+    --h-bg: #fdf0d9; --h-bd: #d18a1c; --h-fg: #5c3a00;
+    --u-bg: #eef0f2; --u-bd: #8a9199; --u-fg: #3a3f45;
+    --shop: #5e8e3e;
+  }
+  /* light by default; the header button sets data-theme="dark" */
+  :root[data-theme="dark"] {
+    --bg: #121416; --card: #1b1e21; --ink: #e6e8ea; --muted: #9aa1a9; --line: #4a515a; --chip: #3a4047;
+    --d-bg: #15321e; --d-bd: #4fbf6b; --d-fg: #c8f0d2;
+    --i-bg: #172a4a; --i-bd: #6d9bf0; --i-fg: #d3e2ff;
+    --h-bg: #3a2a0c; --h-bd: #e6a640; --h-fg: #f8e2bb;
+    --u-bg: #2a2d31; --u-bd: #8a9199; --u-fg: #d5d9de;
+    --shop: #95bf47;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .scroll { overflow-x: auto; padding: 24px 16px 40px; }
+  .page { min-width: 1120px; max-width: 1320px; margin: 0 auto; }
+  header h1 { font-size: 20px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; }
+  .theme { float: right; font: 12px system-ui, sans-serif; padding: 4px 10px; border-radius: 8px;
+           border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .legend { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 14px 0 22px; font-size: 12px; color: var(--muted); }
+  .legend .sep { width: 1px; height: 18px; background: var(--line); margin: 0 10px; }
+
+  /* chips: x = plain (non-Shopify); d/i/h/u = Shopify item, colored by confidence */
+  .c { display: inline-block; padding: 2px 8px; margin: 2px 3px 2px 0; border-radius: 10px;
+       border: 1px solid; font-size: 12px; line-height: 1.5; cursor: help; white-space: nowrap; }
+  .x { background: transparent; border-color: var(--chip); color: var(--ink); }
+  .x.q { border-style: dashed; border-color: var(--line); color: var(--muted); }
+  .d { background: var(--d-bg); border-color: var(--d-bd); color: var(--d-fg); }
+  .i { background: var(--i-bg); border-color: var(--i-bd); color: var(--i-fg); }
+  .h { background: var(--h-bg); border-color: var(--h-bd); color: var(--h-fg); }
+  .u { background: var(--u-bg); border-color: var(--u-bd); color: var(--u-fg); border-style: dashed; }
+
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  .step h2, .path h3 { font-size: 14px; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; }
+  .n { display: inline-flex; justify-content: center; align-items: center; min-width: 22px; height: 22px;
+       border-radius: 11px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; }
+  .row { display: flex; gap: 14px; align-items: stretch; }
+  .row > .step { flex: 1; }
+  .aside { flex: 0 0 250px; border-style: dashed; color: var(--muted); }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 8px 0 2px; }
+  .label.shop { color: var(--shop); font-weight: 600; }
+  .label.shop::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+                        background: var(--shop); margin-right: 5px; vertical-align: 0; }
+
+  .arrow { display: flex; justify-content: center; height: 26px; }
+  .arrow svg { width: 14px; height: 26px; }
+  .arrow path, .fan line { stroke: var(--line); stroke-width: 2; fill: none; }
+  .arrow .head { fill: var(--line); stroke: none; }
+  .fan { display: block; width: 100%; height: 34px; }
+
+  .paths { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .path { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .path .via { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  .gather { text-align: center; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  footer { margin-top: 22px; font-size: 12px; color: var(--muted); }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="scroll"><div class="page">
+
+<header>
+  <button class="theme" id="theme" type="button">Dark mode</button>
+  <h1>ChatGPT product discovery — flow</h1>
+  <p>As of 2026-10-31 · ChatGPT consumer app · product results documented for US users · hover any item for evidence IDs · tables: <code>flow-draft.md</code></p>
+</header>
+
+<div class="legend">
+  <span class="label shop" style="margin:0 6px 0 0">Shopify items</span>
+  <span class="c d" title="VERIFIED FACT: OpenAI, Shopify or a cited study states it">documented</span>
+  <span class="c i" title="EVIDENCE-BASED INFERENCE: follows from documented facts; nobody states it. Includes Shopify Catalog signals whose use by ChatGPT is not stated.">inferred</span>
+  <span class="c h" title="UNVERIFIED HYPOTHESIS: plausible, untested">hypothesis</span>
+  <span class="c u" title="No source describes it">unknown</span>
+  <span class="sep"></span>
+  Other items:
+  <span class="c x" title="Documented">documented</span>
+  <span class="c x q" title="Inferred, hypothesis or unknown; the tooltip says which">not documented</span>
+</div>
+
+<!-- 0 -->
+<div class="step">
+  <h2><span class="n">0</span>User prompt</h2>
+  <span class="c x" title="Example query from the AURA brief">premium ceramic coffee mug under $30</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 1 -->
+<div class="row">
+  <div class="step">
+    <h2><span class="n">1</span>Intent check (by the plan's model)</h2>
+    <span class="c x" title="CGPT-048 · documented">shopping intent → product results</span>
+    <span class="c x q" title="CGPT-048 · unknown: no classifier or threshold described">classifier</span>
+    <span class="c x" title="CGPT-052 · documented (2026-10-07)">Free/Go: GPT-6 Luna</span>
+    <span class="c x" title="CGPT-052 · documented (2026-10-07)">paid: GPT-6 Sol</span>
+    <span class="c x" title="CGPT-052 · documented (2026-07-06)">mini fallback at limits</span>
+    <span class="c x" title="CGPT-050 · documented">model decides to search</span>
+    <span class="c x" title="CGPT-049, CGPT-053, CGPT-054 · documented: search and shopping on all plans; no model gating stated">all plans</span>
+    <span class="c x q" title="CGPT-054 · unknown: no source; test CGPT-T01 C4 vs C5">path differences by model</span>
+    <span class="c x" title="CGPT-022, CGPT-046 · documented; contradicted by CGPT-053 'all ChatGPT users'">US users only</span>
+  </div>
+  <div class="step aside">
+    <h2>No shopping intent</h2>
+    <span class="c x" title="CGPT-048, CGPT-050 · documented">normal answer, search optional</span>
+  </div>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 2 -->
+<div class="step">
+  <h2><span class="n">2</span>Query rewrite</h2>
+  <span class="c x" title="CGPT-002 · documented">targeted sub-queries</span>
+  <span class="c x" title="CGPT-003 · documented; only when memory is on">saved memories</span>
+  <span class="c x" title="CGPT-003, CGPT-045 · documented">approx. location (IP)</span>
+  <span class="c x" title="CGPT-051 · documented">follow-up sub-queries</span>
+  <span class="c x q" title="RES-014 · inferred for the app: API study">adds unnamed brands (28%, API)</span>
+  <span class="c x q" title="CGPT-002 · inferred: Shopify is a documented search provider; Catalog search as the target is inferred">→ Shopify: P1</span>
+  <span class="c x q" title="CGPT-002 · inferred: Microsoft is a documented search provider; web index as the target is inferred">→ Microsoft: P3</span>
+</div>
+
+<!-- 3 -->
+<svg class="fan" viewBox="0 0 1000 34" preserveAspectRatio="none">
+  <line x1="500" y1="0" x2="500" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="98" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="299" y1="17" x2="299" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="17" x2="500" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="701" y1="17" x2="701" y2="34" vector-effect="non-scaling-stroke"/>
+  <line x1="902" y1="17" x2="902" y2="34" vector-effect="non-scaling-stroke"/>
+</svg>
+<p class="gather"><span class="n">3</span>&nbsp; Candidate gathering · <span class="c x q" title="CGPT-012 · unknown: OpenAI lists the inputs, not their order or timing">order and timing</span></p>
+
+<div class="paths">
+  <!-- P1 -->
+  <div class="path">
+    <h3>P1 · First-party catalog</h3>
+    <div class="via">
+      <span class="c x" title="SHOP-001, CGPT-017 · documented">Shopify Catalog</span>
+      <span class="c x q" title="CGPT-002 + SHOP-009 · inferred">Shopify search provider</span>
+      <span class="c x" title="CGPT-017 · documented">Etsy</span>
+    </div>
+    <div class="label shop">Gate</div>
+    <span class="c d" title="SHOP-001 · documented: Sales channels > Agentic > ChatGPT">ChatGPT access ON (default)</span>
+    <span class="c d" title="SHOP-003 · documented">sells to US</span>
+    <span class="c d" title="SHOP-003 · documented">ToS, privacy, refund policy</span>
+    <span class="c d" title="SHOP-005 · documented">title + image + price &gt; 0</span>
+    <span class="c d" title="SHOP-010 · documented">not Unlisted / <code>seo.hidden</code></span>
+    <span class="c d" title="SHOP-005 · documented">category not excluded</span>
+    <div class="label shop">Catalog data sent</div>
+    <span class="c d" title="SHOP-006 · documented; remappable (SHOP-007)">title</span>
+    <span class="c d" title="SHOP-006 · documented; remappable (SHOP-007)">description</span>
+    <span class="c d" title="SHOP-006 · documented">options / variants</span>
+    <span class="c d" title="SHOP-006 · documented">images</span>
+    <span class="c d" title="SHOP-006 · documented">price</span>
+    <span class="c d" title="SHOP-007 · documented">compare-at → <code>list_price</code></span>
+    <span class="c d" title="SHOP-006 · documented">inventory</span>
+    <span class="c i" title="SHOP-008 · inferred: Shopify lists it as an AI-platform field; ChatGPT use not stated">barcode / GTIN</span>
+    <span class="c i" title="SHOP-008 · inferred: Shopify lists them; ChatGPT use not stated">type · vendor · collections · tags</span>
+    <span class="c d" title="SHOP-005, SHOP-024 · documented; Catalog infers it; not remappable">category (Catalog-inferred)</span>
+    <span class="c d" title="SHOP-015 · documented; Shopify-generated">inferred attributes · specs</span>
+    <div class="label shop">Catalog search signals</div>
+    <span class="c i" title="SHOP-009 · Catalog signal; ChatGPT use inferred">description length</span>
+    <span class="c i" title="SHOP-009 · Catalog signal; ChatGPT use inferred">image count</span>
+    <span class="c i" title="SHOP-009, SHOP-034 · Catalog signal; verified reviews only">verified rating + count</span>
+    <span class="c i" title="SHOP-009 · Catalog signal">variants · in-stock · readable names</span>
+    <span class="c i" title="SHOP-009 · Catalog signal">shipping · returns · refund policies</span>
+    <span class="c i" title="SHOP-034 · Catalog filter">ships-to zones</span>
+    <span class="c i" title="SHOP-034 · Catalog filter">color · size · gender attrs</span>
+    <span class="c i" title="SHOP-034 · Catalog filter">media: video · 3D</span>
+    <span class="c i" title="SHOP-009 · Catalog signal; accrues over time">popularity · engagement · brand</span>
+    <span class="c h" title="SHOP-035 · hypothesis: paid placement exists in Catalog; ChatGPT use untested (CGPT-010: results are not ads)">promoted placements</span>
+    <span class="c x q" title="SHOP-034 · unknown: not published">filters ChatGPT sends · weights</span>
+  </div>
+
+  <!-- P2 -->
+  <div class="path">
+    <h3>P2 · ACP product feed</h3>
+    <div class="via">
+      <span class="c x" title="CGPT-027, ACP-003 · documented">SFTP / Feed API push</span>
+      <span class="c x" title="CGPT-025 · documented">approved partners</span>
+      <span class="c x" title="CGPT-018, MKT-017, MKT-019, MKT-020 · documented">Stripe · Salesforce · Feedonomics</span>
+    </div>
+    <div class="label shop">Shopify</div>
+    <span class="c d" title="CGPT-017 · documented: Shopify catalogs need no feed application">not used: Catalog instead</span>
+    <div class="label">Required fields</div>
+    <span class="c x" title="CGPT-028 · documented">item_id</span>
+    <span class="c x" title="CGPT-028 · documented">title</span>
+    <span class="c x" title="CGPT-028 · documented">description</span>
+    <span class="c x" title="CGPT-028 · documented">url</span>
+    <span class="c x" title="CGPT-028 · documented">brand</span>
+    <span class="c x" title="CGPT-028 · documented">seller_name</span>
+    <span class="c x" title="CGPT-028 · documented">image_url</span>
+    <span class="c x" title="CGPT-028 · documented">availability</span>
+    <span class="c x" title="CGPT-028 · documented">price</span>
+    <div class="label">Optional fields</div>
+    <span class="c x" title="CGPT-028 · documented">gtin · mpn</span>
+    <span class="c x" title="CGPT-028 · documented">material · dimensions</span>
+    <span class="c x" title="CGPT-028, CGPT-030 · documented">star_rating · review_count</span>
+    <span class="c x" title="CGPT-028 · documented">return fields</span>
+    <div class="label">Ranking</div>
+    <span class="c x" title="CGPT-029 · documented">eligibility ≠ display</span>
+    <span class="c x" title="ACP-004 · documented">ranking out of ACP scope</span>
+  </div>
+
+  <!-- P3 -->
+  <div class="path">
+    <h3>P3 · Web crawl + Microsoft</h3>
+    <div class="via">
+      <span class="c x" title="CGPT-004, CGPT-006 · documented; the one stated eligibility condition">OAI-SearchBot crawl</span>
+      <span class="c x q" title="CGPT-002 · inferred: Microsoft documented as provider; index inferred; Copilot phase">Microsoft index</span>
+      <span class="c x q" title="CGPT-005 · hypothesis: documented for Codex/Work only">OpenAI index</span>
+    </div>
+    <div class="label shop">Shopify storefront</div>
+    <span class="c d" title="SHOP-016 · documented: User-agent * Allow /; no OpenAI group">robots.txt allows all</span>
+    <span class="c d" title="CGPT-004, SHOP-019 · documented: IP access; Shopify rate-limits unsigned bots">CDN / bot access</span>
+    <span class="c u" title="Unknown: what OAI-SearchBot extracts is not documented">product page HTML</span>
+    <span class="c h" title="SHOP-021, SHOP-022 · hypothesis: default Product/ProductGroup JSON-LD; ChatGPT use untested; RES-012 no lift (API)">JSON-LD Product</span>
+    <span class="c h" title="SHOP-020 · hypothesis: served by default; ChatGPT use untested">llms.txt · agents.md</span>
+    <span class="c u" title="SHOP-023 · unknown: served by default; OpenAI use not documented">sitemap</span>
+    <div class="label">Off-site</div>
+    <span class="c x q" title="RES-011 · inferred for the app: API study, 93.5% third-party media for 'best X'">review / comparison sites</span>
+    <div class="label">Blocked crawler</div>
+    <span class="c x" title="CGPT-006 · documented">navigational link only</span>
+    <span class="c x" title="CGPT-007 · documented">GPTBot block: no effect</span>
+  </div>
+
+  <!-- P4 -->
+  <div class="path">
+    <h3>P4 · Third-party data + reviews</h3>
+    <div class="via">
+      <span class="c x q" title="CGPT-012 · unknown: providers not named">unnamed providers</span>
+      <span class="c x" title="CGPT-013 · documented">public review sites</span>
+    </div>
+    <div class="label">Reads</div>
+    <span class="c x" title="CGPT-014 · documented">price</span>
+    <span class="c x" title="CGPT-012 · documented">description</span>
+    <span class="c x" title="CGPT-015 · documented">merchant list</span>
+    <span class="c x" title="CGPT-013 · documented; not verified by OpenAI">review text</span>
+    <div class="label shop">Shopify</div>
+    <span class="c h" title="RES-021 (Tier 3), RES-019 (press) · hypothesis: Google as provider; SHOP-025, SHOP-029">Google &amp; YouTube app feed</span>
+    <span class="c i" title="CGPT-013, SHOP-022 · inferred: default theme has no review markup">review app</span>
+  </div>
+
+  <!-- P5 -->
+  <div class="path">
+    <h3>P5 · Model pre-search answer</h3>
+    <div class="via">
+      <span class="c x" title="CGPT-012 · documented input">pre-search response</span>
+      <span class="c x q" title="CGPT-007 · inferred: GPTBot collects training data; link to this answer inferred">training data</span>
+    </div>
+    <div class="label">Reads</div>
+    <span class="c x q" title="Inferred: no live read at query time">nothing live</span>
+    <span class="c x q" title="RES-015, RES-017, RES-018 · inferred for the app: API studies">brand priors</span>
+    <div class="label shop">Shopify</div>
+    <span class="c d" title="SHOP-016 · documented: no GPTBot group">robots.txt allows GPTBot</span>
+  </div>
+</div>
+
+<svg class="fan" viewBox="0 0 1000 34" preserveAspectRatio="none">
+  <line x1="98" y1="0" x2="98" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="299" y1="0" x2="299" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="0" x2="500" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="701" y1="0" x2="701" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="902" y1="0" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="98" y1="17" x2="902" y2="17" vector-effect="non-scaling-stroke"/>
+  <line x1="500" y1="17" x2="500" y2="34" vector-effect="non-scaling-stroke"/>
+</svg>
+
+<!-- 4 -->
+<div class="step">
+  <h2><span class="n">4</span>Combine</h2>
+  <span class="c x q" title="Unknown: not published">merge · de-dup · feed vs crawl conflicts</span>
+  <span class="c x" title="SHOP-024 · documented">Catalog clusters identical items</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 5 -->
+<div class="step">
+  <h2><span class="n">5</span>Policy filter</h2>
+  <span class="c x" title="CGPT-012, CGPT-026 · documented">prohibited products</span>
+  <span class="c x" title="CGPT-026 · documented">seller bans</span>
+  <span class="label shop" style="margin-left:8px">Shopify</span>
+  <span class="c d" title="SHOP-005 · documented">product category exclusions</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 6 -->
+<div class="step">
+  <h2><span class="n">6</span>Product selection (carousel)</h2>
+  <span class="c x" title="CGPT-011 · documented">relevance to intent</span>
+  <span class="c x" title="CGPT-011 · documented">query + Memory + Custom instructions</span>
+  <span class="c x" title="CGPT-011 · documented example factors">options · price · reviews · ease of use</span>
+  <span class="c x" title="CGPT-011 · documented">budget → price weight</span>
+  <span class="c x q" title="CGPT-011 · unknown: no formula or weights">weights · candidate count</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 7 -->
+<div class="step">
+  <h2><span class="n">7</span>Presentation</h2>
+  <span class="c x" title="CGPT-013 · documented">rewritten titles · descriptions</span>
+  <span class="c x" title="CGPT-013 · documented">generated labels</span>
+  <span class="c x" title="CGPT-013 · documented">review summaries</span>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 8 -->
+<div class="row">
+  <div class="step">
+    <h2><span class="n">8</span>Merchant list (user opens a product)</h2>
+    <span class="c x" title="CGPT-015 · documented">availability</span>
+    <span class="c x" title="CGPT-015 · documented">price</span>
+    <span class="c x q" title="CGPT-015 · unknown: 'quality' undefined">quality</span>
+    <span class="c x" title="CGPT-015 · documented; definition not stated">maker / primary seller</span>
+    <span class="c x" title="CGPT-014 · documented">headline price = 1st merchant</span>
+    <span class="label shop" style="margin-left:8px">Shopify</span>
+    <span class="c i" title="CGPT-015 + SHOP-006 · inferred mapping">inventory → availability</span>
+    <span class="c i" title="CGPT-015 + SHOP-006 · inferred mapping">variant price → price</span>
+    <span class="c i" title="CGPT-015 + SHOP-022 · inferred mapping; how ChatGPT decides 'maker' is unknown">vendor → maker</span>
+  </div>
+  <div class="step aside">
+    <h2>Beside the answer</h2>
+    <span class="c x" title="CGPT-043 · documented">1 ad unit · Free/Go</span>
+    <span class="c x" title="CGPT-042 · documented">separate system</span>
+  </div>
+</div>
+<div class="arrow"><svg viewBox="0 0 14 26"><path d="M7 0V18"/><path class="head" d="M1 16H13L7 26Z"/></svg></div>
+
+<!-- 9 -->
+<div class="step">
+  <h2><span class="n">9</span>Hand-off</h2>
+  <span class="c x" title="CGPT-022 · documented">merchant checkout</span>
+  <span class="label shop" style="margin-left:8px">Shopify</span>
+  <span class="c d" title="SHOP-002 · documented">online-store checkout</span>
+  <span class="c d" title="SHOP-012 · documented">ChatGPT referral attribution</span>
+</div>
+
+<footer>Evidence registry: <code>evidence/registry/</code>. Colors show how sure the evidence is that this path uses a Shopify item, not how much the item affects ranking.</footer>
+
+</div></div>
+<script>
+  (function () {
+    var root = document.documentElement, btn = document.getElementById('theme');
+    function apply(t) {
+      if (t === 'dark') root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+      btn.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('aura-theme'); } catch (e) {}
+    apply(saved === 'dark' ? 'dark' : 'light');
+    btn.addEventListener('click', function () {
+      var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(t);
+      try { localStorage.setItem('aura-theme', t); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>

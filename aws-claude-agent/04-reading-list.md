@@ -4,7 +4,7 @@ Every URL below was status-checked by me on **2026-10-30** and returned HTTP 200
 Ordered by what it is actually useful for, not by prestige.
 
 **Read this first.** Search engines blocked automated access throughout this session
-(`[ACA-OBS-006]`): DuckDuckGo CAPTCHA, Brave 429, Mojeek 403, searx browser check, Bing returning
+(<sup>`[ACA-OBS-006]`</sup>): DuckDuckGo CAPTCHA, Brave 429, Mojeek 403, searx browser check, Bing returning
 unrelated results. Sources were found by enumerating vendor sitemaps and following links from
 primary docs. Consequence: **primary documentation is well covered; third-party SEO/industry
 commentary is under-sampled.** That is a real limitation of this round, and it is why the "industry
@@ -162,6 +162,6 @@ Already located, not yet read:
 
 The structural difference to test first: Shopify says Google AI Mode and Gemini discovery "is
 powered by individual sales channels rather than a Shopify Catalog access setting"
-`[ACA-SHOP-005]`, and that those channels **do** support in-channel checkout — unlike ChatGPT. So
+<sup>`[ACA-SHOP-005]`</sup>, and that those channels **do** support in-channel checkout — unlike ChatGPT. So
 for Gemini the Google & YouTube sales channel and Merchant Center feed are the levers, not Shopify
 Catalog.

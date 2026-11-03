@@ -272,8 +272,8 @@ Schema: `evidence/README.md`. All entries accessed 2026-10-30. Help-center pages
 - **Published:** not stated · **Accessed:** 2026-10-30
 - **Excerpt:** > "We’re moving away from a standalone Instant Checkout experience in ChatGPT and prioritizing better shopping discovery and merchant-owned checkout experiences. Users can discover and evaluate products in ChatGPT, but purchases are completed on merchant-owned websites or apps." / > "Shopping is currently live for ChatGPT users in the U.S. We’re building a merchant platform for self-serve data integration later this year, and plan to expand to more merchants and regions over time."
 - **Establishes:** OpenAI's only region statement for shopping is US-only. India is not named.
-- **Limitations:** "Shopping" may mean the merchant-feed program, not every product carousel. The consumer help article states no region. Must be tested from India (EXP).
-- **Related:** CGPT-046, CGPT-031 (feed defaults to US)
+- **Limitations:** "Shopping" may mean the merchant-feed program, not every product carousel. The consumer help article states no region. The 2026-03-24 release note says the shopping update reached "all ChatGPT users" (CGPT-053). Must be tested from India (EXP).
+- **Related:** CGPT-046, CGPT-031 (feed defaults to US), CGPT-053 (contradiction)
 - **Origin:** notes/b-…#B-03; notes/a-…#A-39 · **Checked:** 2026-10-30
 
 ### CGPT-023 — In-chat checkout survives only as a beta for "select marketplace partners"
@@ -583,3 +583,89 @@ Schema: `evidence/README.md`. All entries accessed 2026-10-30. Help-center pages
 - **Limitations:** None.
 - **Related:** CGPT-014
 - **Origin:** notes/a-…#A-41 · **Checked:** 2026-10-30
+
+### CGPT-048 — Product results show when a question "suggests shopping intent"
+- **Claim:** ChatGPT shows product options with images, details and links when it judges that a question suggests shopping intent.
+- **Classification:** VERIFIED FACT (the trigger exists). How intent is detected: undocumented. · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** ChatGPT / intent detection
+- **Source:** "Shopping with ChatGPT Search" — OpenAI Help Center — https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search
+- **Published:** ≈2026-10-31 (page showed "Updated: 8 hours ago") · **Accessed:** 2026-10-31
+- **Excerpt:** > "When your question suggests shopping intent (for example, “Help me find costumes for my dog”), ChatGPT can show product options with imagery, product details, and links to sites where you can learn more or purchase."
+- **Establishes:** An intent check gates the product-results path. Non-shopping questions take the normal answer path.
+- **Limitations:** No classifier, threshold or confidence is described. "Can show" means results are not guaranteed even with shopping intent.
+- **Related:** CGPT-011, CGPT-012
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+## Plans, models and search behavior
+
+### CGPT-049 — Web search runs on every plan and for logged-out users, within plan usage limits
+- **Claim:** OpenAI lists web search on Free, Go, Plus, Pro, Business, Enterprise and Edu, and for signed-out users. Searches count against plan usage limits.
+- **Classification:** VERIFIED FACT · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** ChatGPT / plans, search availability
+- **Source:** "Searching the web with ChatGPT" — OpenAI Help Center — https://help.openai.com/en/articles/9237897-searching-the-web-with-chatgpt
+- **Published:** ≈2026-10-20 ("Updated: 11 days ago") · **Accessed:** 2026-10-31
+- **Excerpt:** > "Web search is available on ChatGPT Free, Go, Plus, Pro, Business, Enterprise, and Edu. People who are not signed in can also use web search." / > "Searches are subject to your plan’s usage limits."
+- **Establishes:** No plan is documented as lacking web search. The search path exists for Free and logged-out users.
+- **Limitations:** Per-plan search limits are not stated. Availability says nothing about how often search runs.
+- **Related:** CGPT-050, CGPT-052, CGPT-053
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+### CGPT-050 — ChatGPT decides when to search; a model update changed that decision
+- **Claim:** ChatGPT may search automatically when a question benefits from current information. OpenAI said GPT-5.5 Instant (2026-05-05) improved "when ChatGPT decides to search the web".
+- **Classification:** VERIFIED FACT · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** ChatGPT / models, search behavior
+- **Source:** "Searching the web with ChatGPT" — OpenAI Help Center — https://help.openai.com/en/articles/9237897-searching-the-web-with-chatgpt ; "ChatGPT release notes" — OpenAI Help Center — https://help.openai.com/en/articles/6825453-chatgpt-release-notes
+- **Published:** help ≈2026-10-20; release note dated 2026-05-05 · **Accessed:** 2026-10-31
+- **Excerpt:** > "ChatGPT may search the web automatically when your question would benefit from current information." / > "It replaces GPT-5.3 Instant for all ChatGPT users and improves everyday answers across accuracy, clarity and conciseness, image understanding, STEM questions, and when ChatGPT decides to search the web."
+- **Establishes:** The search decision is model behavior. It can differ between model versions.
+- **Limitations:** No source says models on different plans search at different rates. Users can also start a search manually.
+- **Related:** CGPT-049, CGPT-052
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+### CGPT-051 — After first results, ChatGPT may send more specific follow-up queries to other providers
+- **Claim:** Query rewriting is iterative. ChatGPT reviews the initial results, then may send more specific queries to other search providers.
+- **Classification:** VERIFIED FACT · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** ChatGPT / retrieval
+- **Source:** "Searching the web with ChatGPT" — OpenAI Help Center — https://help.openai.com/en/articles/9237897-searching-the-web-with-chatgpt
+- **Published:** ≈2026-10-20 · **Accessed:** 2026-10-31
+- **Excerpt:** > "After reviewing the initial results, ChatGPT search may send additional, more specific queries to other search providers, like “CHS-114 conference 2025.”"
+- **Establishes:** One prompt can produce several rounds of sub-queries across providers.
+- **Limitations:** The example is not a shopping query. Round count and provider order are not stated.
+- **Related:** CGPT-002, CGPT-003
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+### CGPT-052 — Free and Go run a different default model than paid plans; a mini model is the rate-limit fallback
+- **Claim:** Since 2026-10-07, Plus, Pro, Business and Enterprise use GPT-6 Sol in Chat; Free and Go use GPT-6 Luna. Since 2026-07-06, users who hit GPT-5.5 Instant or Auto limits fall back to GPT-5.5 Instant Mini.
+- **Classification:** VERIFIED FACT · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** ChatGPT / plans, models
+- **Source:** "ChatGPT release notes" — OpenAI Help Center — https://help.openai.com/en/articles/6825453-chatgpt-release-notes
+- **Published:** entries dated 2026-10-07 and 2026-07-06 · **Accessed:** 2026-10-31
+- **Excerpt:** > "Plus, Pro, Business, and Enterprise use GPT-6 Sol; Free and Go use GPT-6 Luna." / > "It replaces GPT-5.3 Instant Mini as the fallback model users reach after hitting their GPT-5.5 Instant or Auto rate limits."
+- **Establishes:** The model that answers a shopping prompt depends on the plan and on usage limits.
+- **Limitations:** No source says the shopping path or its inputs differ by model. The current fallback model under GPT-6 is not stated.
+- **Related:** CGPT-050, CGPT-053, CGPT-054
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+### CGPT-053 — The 2026-03-24 shopping update rolled out to all ChatGPT users and names ACP as the product-data protocol
+- **Claim:** OpenAI's release note says the shopping improvements rolled out to all ChatGPT users. It says they improve retrieval of product information "from merchants and other providers using the Agentic Commerce Protocol (ACP)".
+- **Classification:** VERIFIED FACT (statements). That Shopify Catalog data reaches ChatGPT over ACP is an EVIDENCE-BASED INFERENCE at most: the note does not name Shopify. · **Confidence:** Medium · **Tier:** 1
+- **Subject / topic:** ChatGPT / plans, protocols
+- **Source:** "ChatGPT release notes" — OpenAI Help Center — https://help.openai.com/en/articles/6825453-chatgpt-release-notes
+- **Published:** entry dated 2026-03-24 · **Accessed:** 2026-10-31
+- **Excerpt:** > "These improvements are rolling out to all ChatGPT users this week." / > "These updates improve how ChatGPT retrieves and presents product information from merchants and other providers using the Agentic Commerce Protocol (ACP)."
+- **Establishes:** Product results are not documented as plan-gated. ACP is OpenAI's stated intake protocol for merchant and provider product data.
+- **Limitations:** Contradiction: "all ChatGPT users" vs the merchant page's "live for ChatGPT users in the U.S." (CGPT-022). Region scope is unresolved.
+- **Related:** CGPT-018, CGPT-022, CGPT-049; report §10 gap 7 (wire format)
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31
+
+### CGPT-054 — OpenAI documents model gating for reservation search; none for shopping
+- **Claim:** Reservation search works only with GPT-5.6 Sol or GPT-5.6 Luna on eligible consumer plans. The shopping help article states no plan or model restriction.
+- **Classification:** VERIFIED FACT (both statements). No shopping gating: VERIFIED FACT as absence in fetched OpenAI pages. · **Confidence:** Medium (absence of evidence) · **Tier:** 1
+- **Subject / topic:** ChatGPT / models, feature gating
+- **Source:** "Searching the web with ChatGPT" — https://help.openai.com/en/articles/9237897-searching-the-web-with-chatgpt ; "Shopping with ChatGPT Search" — https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search (OpenAI Help Center)
+- **Published:** ≈2026-10-20; ≈2026-10-31 · **Accessed:** 2026-10-31
+- **Excerpt:** > "Reservation search is available on eligible consumer plans on web, mobile, and desktop when using GPT-5.6 Sol or GPT-5.6 Luna." / shopping article: > "Available in ChatGPT on mobile and web."
+- **Establishes:** OpenAI states model gating where a search feature has it. No such statement exists for shopping.
+- **Limitations:** Undocumented gating can still exist. Test by plan (CGPT-T01 condition C5).
+- **Related:** CGPT-048, CGPT-049, CGPT-052
+- **Origin:** lead, live browser read 2026-10-31 · **Checked:** 2026-10-31

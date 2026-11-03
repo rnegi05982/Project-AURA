@@ -11,12 +11,12 @@ The brief proposed one `evidence-registry.md` plus separate `verified-facts.md`,
 
 | File | Prefix | Subject | Entries (2026-10-31) |
 |---|---|---|---|
-| `registry/cgpt.md` | CGPT | ChatGPT / OpenAI product behavior and documentation | 47 |
+| `registry/cgpt.md` | CGPT | ChatGPT / OpenAI product behavior and documentation | 54 |
 | `registry/acp.md` | ACP | Agentic Commerce Protocol specification and governance | 8 |
 | `registry/gem.md` | GEM | Google consumer AI surfaces: Gemini app, AI Mode, AI Overviews | 17 |
 | `registry/goog.md` | GOOG | Google merchant and search infrastructure: Merchant Center, Shopping Graph, UCP on Google, crawlers, structured data | 35 |
 | `registry/ucp.md` | UCP | Universal Commerce Protocol and AP2 specification and governance | 5 |
-| `registry/shop.md` | SHOP | Shopify platform, Shopify Catalog, Google & YouTube channel, themes | 33 |
+| `registry/shop.md` | SHOP | Shopify platform, Shopify Catalog, Google & YouTube channel, themes | 38 |
 | `registry/mkt.md` | MKT | Marketplaces and other commerce platforms | 29 |
 | `registry/res.md` | RES | Independent research: papers, studies, experiments by others | 48 |
 | `registry/exp.md` | EXP | AURA's own experiments | not started |

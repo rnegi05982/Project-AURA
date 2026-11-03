@@ -14,6 +14,7 @@
 | H4 | Flipkart product pages can appear as cited sources from India. | MKT-008 |
 | H5 | Shopify stores that sell to the US appear in US carousels; India-only Shopify stores do not. | SHOP-001, SHOP-003 |
 | H6 | Item sets vary heavily across same-day repeats. | RES-014, RES-016, RES-022 |
+| H7 | Free (GPT-6 Luna) and Plus (GPT-6 Sol) show the same paths: carousel presence and source types match; item sets may differ. | CGPT-049, CGPT-052, CGPT-054 |
 
 ## Queries (fixed strings — never edit; add new IDs instead)
 
@@ -34,6 +35,7 @@
 | C2 | India, no VPN | logged-in, fresh account | Temporary Chat (no memory, no ads) | Free |
 | C3 | US, physical location (collaborator), no VPN | logged-out | none | — |
 | C4 | US, physical location (collaborator), no VPN | logged-in, fresh account | memory off, normal chat | Free (ads may appear; label them) |
+| C5 | US, physical location (collaborator), no VPN | logged-in, fresh account | memory off, normal chat | Plus (record the model shown); compare with C4 for H7 |
 
 VPN-based US runs are a separate, weaker condition. Record VPN use if a US collaborator is unavailable.
 

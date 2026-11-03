@@ -3,11 +3,11 @@
 Derived from `research/ai-platforms/gemini/report.md`. Evidence as of 2026-10-31. Status values as in `shopify/chatgpt.md`: Mandatory, Recommended, Experimental, Unverified.
 
 Three paths reach Google's AI surfaces for a Shopify store:
-- **Feed path:** Google & YouTube app → Merchant Center → free listings → Shopping Graph → Gemini app and AI Mode product cards [SHOP-025, GOOG-010, GEM-001].
-- **Crawl path:** Googlebot and Storebot-Google → Search index and Shopping Graph → AIO/AI Mode citations and products [GOOG-010, GOOG-026, GOOG-031].
-- **Checkout path:** Shopify-powered direct checkout via UCP, US/CA/AU buyers only, on by default [SHOP-026, SHOP-027].
+- **Feed path:** Google & YouTube app → Merchant Center → free listings → Shopping Graph → Gemini app and AI Mode product cards <sup>[SHOP-025, GOOG-010, GEM-001]</sup>.
+- **Crawl path:** Googlebot and Storebot-Google → Search index and Shopping Graph → AIO/AI Mode citations and products <sup>[GOOG-010, GOOG-026, GOOG-031]</sup>.
+- **Checkout path:** Shopify-powered direct checkout via UCP, US/CA/AU buyers only, on by default <sup>[SHOP-026, SHOP-027]</sup>.
 
-Key difference from ChatGPT: Shopify Catalog does **not** feed Google. Merchant Center does [SHOP-025]. A store can be live in ChatGPT and invisible to Google's product cards, or the reverse.
+Key difference from ChatGPT: Shopify Catalog does **not** feed Google. Merchant Center does <sup>[SHOP-025]</sup>. A store can be live in ChatGPT and invisible to Google's product cards, or the reverse.
 
 ---
 
@@ -28,7 +28,7 @@ Key difference from ChatGPT: Shopify Catalog does **not** feed Google. Merchant 
 | GW2 | In Search Console, keep the "Search generative AI control" on include. | Exclusion removes the site from AIO, AI Mode and Discover AI features. | GOOG-028 | Search Console > Settings. |
 | GW3 | If the theme has a custom `robots.txt.liquid`, check Storebot-Google separately. It falls back to `*`, not to a Googlebot group. | A custom file can block Shopping crawling while allowing Search. | GOOG-034, SHOP-017 | Read the live file group by group. |
 
-Note: blocking Google-Extended removes the store from Gemini app grounding and training but not from Search, AIO or AI Mode [GOOG-027]. One study found Gemini never cited sites that block it [RES-039]. Leave it allowed unless training opt-out matters more than Gemini app citations.
+Note: blocking Google-Extended removes the store from Gemini app grounding and training but not from Search, AIO or AI Mode <sup>[GOOG-027]</sup>. One study found Gemini never cited sites that block it <sup>[RES-039]</sup>. Leave it allowed unless training opt-out matters more than Gemini app citations.
 
 ## Mandatory (checkout path — only if selling to US, CA or AU buyers)
 
@@ -38,7 +38,7 @@ Note: blocking Google-Extended removes the store from Gemini app grounding and t
 | GC2 | Set the return policy in Merchant Center (cost, window, link) and a customer-support contact. | Google requires it for UCP checkout; the Shopify app does not document syncing it. | SHOP-031, GOOG-002 | Merchant Center > Business info > Returns. |
 | GC3 | Plan server-side attribution for Google checkout orders. | Client-side pixels and Google Analytics do not fire in this checkout. | SHOP-028 | Compare Shopify orders by channel with GA4. |
 
-Opting out of direct checkout does not remove products from discovery [SHOP-026]. Google says checkout does not change ranking [GOOG-003].
+Opting out of direct checkout does not remove products from discovery <sup>[SHOP-026]</sup>. Google says checkout does not change ranking <sup>[GOOG-003]</sup>.
 
 ---
 
@@ -79,7 +79,7 @@ Opting out of direct checkout does not remove products from discovery [SHOP-026]
 
 ## India-only stores
 
-- The Google feed path works: India is a supported sync and free-listings country [SHOP-032]. Gemini-app and AI Mode shopping are live in India [GEM-002].
-- The checkout path does not apply: Indian buyers cannot use Google direct checkout [SHOP-027, GEM-014].
-- Actions GM1–GM4, GW1–GW3 and GR1–GR5 apply. Measure with the AI performance report (English queries) [GOOG-017].
+- The Google feed path works: India is a supported sync and free-listings country <sup>[SHOP-032]</sup>. Gemini-app and AI Mode shopping are live in India <sup>[GEM-002]</sup>.
+- The checkout path does not apply: Indian buyers cannot use Google direct checkout <sup>[SHOP-027, GEM-014]</sup>.
+- Actions GM1–GM4, GW1–GW3 and GR1–GR5 apply. Measure with the AI performance report (English queries) <sup>[GOOG-017]</sup>.
 - Run `experiments/test-cases/gemini-coffee-mug.md` from India to confirm product cards appear for Indian queries.

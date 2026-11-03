@@ -482,7 +482,7 @@ This column is load-bearing and is the honest part of this registry.
   `checkout`, `cart`, `fulfillment`, `discount`, `buyer_consent`, `order`; prior versions
   `2026-04-08`, `2026-01-23`.
 - **Result:** `/agents.md` and `/llms.txt` are **not** byte-identical (5,750 vs 5,793 bytes),
-  despite the docs saying all three "return the same content" by default `[ACA-SHOP-003]`. Minor,
+  despite the docs saying all three "return the same content" by default <sup>`[ACA-SHOP-003]`</sup>. Minor,
   but it means "identical by default" should not be assumed in tests.
 - **Classification:** EO. One store, one timestamp. Not generalised.
 
@@ -521,7 +521,7 @@ This column is load-bearing and is the honest part of this registry.
   AI/SEO-crawler groups (`AhrefsBot`, `SiteAuditBot`, `Nutch`).
 - **Classification:** EO. n=1.
 - **Why it matters:** Vuori is one of the Shopify merchants OpenAI named in `ACA-CGPT-001`.
-  "Every Shopify store automatically serves… `/agents.md`" `[ACA-SHOP-003]` did not hold for this
+  "Every Shopify store automatically serves… `/agents.md`" <sup>`[ACA-SHOP-003]`</sup> did not hold for this
   storefront as fetched. Either custom-storefront behaviour differs or the route is unhandled by the
   headless front end. Recorded as a gap, not as a refutation of the Shopify doc.
 

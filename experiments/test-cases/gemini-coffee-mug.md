@@ -19,7 +19,7 @@
 
 ## Queries
 
-Use Q01–Q05 and Q01-US exactly as in `chatgpt-coffee-mug.md`. Add question forms, since AIO triggers more on questions [RES-038]:
+Use Q01–Q05 and Q01-US exactly as in `chatgpt-coffee-mug.md`. Add question forms, since AIO triggers more on questions <sup>[RES-038]</sup>:
 
 | ID | Text | Market |
 |---|---|---|
@@ -37,11 +37,11 @@ Use Q01–Q05 and Q01-US exactly as in `chatgpt-coffee-mug.md`. Add question for
 | G5 | AI Mode | US (collaborator), no VPN | logged-out | desktop |
 | G6 | Gemini app (web) | US (collaborator), no VPN | logged-in fresh | desktop |
 
-Device is fixed per condition: device changes AIO sources more than city does [RES-040]. Record the model name shown in the UI [GEM-005].
+Device is fixed per condition: device changes AIO sources more than city does <sup>[RES-040]</sup>. Record the model name shown in the UI <sup>[GEM-005]</sup>.
 
 ## Volume
 
-- 8 runs per query per condition across 3 calendar days [RES-016].
+- 8 runs per query per condition across 3 calendar days <sup>[RES-016]</sup>.
 - Run all conditions for a query on the same day.
 
 ## Probe products
@@ -72,9 +72,9 @@ Findings go to `../findings/` and the registry as `EXP-###`.
 
 ## Merchant-side cross-check
 
-For probes AURA controls, export the Merchant Center AI performance report (English queries, India) for the same weeks [GOOG-017]. Compare its share-of-voice trend with observed appearance rates.
+For probes AURA controls, export the Merchant Center AI performance report (English queries, India) for the same weeks <sup>[GOOG-017]</sup>. Compare its share-of-voice trend with observed appearance rates.
 
 ## Known limits
 
 - Results describe outputs under these conditions only.
-- Personalization is excluded by design (logged-out or fresh accounts). Personal Intelligence and Search history are known to change results [GEM-011].
+- Personalization is excluded by design (logged-out or fresh accounts). Personal Intelligence and Search history are known to change results <sup>[GEM-011]</sup>.

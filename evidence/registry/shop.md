@@ -107,16 +107,16 @@ Shopify Catalog: Shopify's cross-merchant product index that syndicates eligible
 - **Origin:** notes/c-…#C-08 · **Checked:** pending
 
 ### SHOP-009 — Catalog has its own search and "Listing quality" signals; AI channels re-rank
-- **Claim:** The Agentic admin page previews raw Shopify Catalog search output. Listing quality uses description completeness, image coverage, verified product reviews, variant completeness and shop policy completeness. Shopify says channels re-rank and relevance also uses popularity, engagement and brand signals.
+- **Claim:** The Agentic admin search preview shows raw Shopify Catalog search output and whether store products reach the top 10. Listing quality has five signals: description word count; number of images; verified rating and review count; variant/option count, in-stock availability and readable option names; presence of shipping, returns, refund and other policies. Relevance also uses popularity, customer engagement and brand recognition. AI channels re-rank.
 - **Classification:** VERIFIED FACT (for Shopify Catalog search). Effect on ChatGPT ranking: UNVERIFIED HYPOTHESIS. · **Confidence:** Medium · **Tier:** 1
 - **Subject / topic:** Shopify / ranking
 - **Source:** "Managing agentic storefronts" — Shopify Help Center — https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home
-- **Published:** not stated · **Accessed:** 2026-10-30
-- **Excerpt:** > "Agentic storefronts often re-rank results based on their own logic, so what's displayed in the preview might differ from what customers view in the actual AI experience." / > "Product reviews signal trust and popularity, which can influence how AI channels rank your products. This measurement is calculated only from reviews that are verified by trusted sources."
-- **Establishes:** Two ranking layers exist for Shopify products: Catalog search, then ChatGPT's own re-ranking.
-- **Limitations:** "Trusted sources" not named. Whether ChatGPT consumes Catalog's order is not stated.
-- **Related:** CGPT-011, CGPT-015
-- **Origin:** notes/c-…#C-09 · **Checked:** pending
+- **Published:** not stated · **Accessed:** 2026-10-30; re-fetched 2026-10-31
+- **Excerpt:** > "Agentic storefronts often re-rank results based on their own logic, so what's displayed in the preview might differ from what customers view in the actual AI experience." / > "Product reviews signal trust and popularity, which can influence how AI channels rank your products. This measurement is calculated only from reviews that are verified by trusted sources." / > "Listing quality is about what you can directly control with your products. Search relevance also depends on other signals such as popularity, customer engagement, and brand recognition, which are factors that your store can accumulate over time." / > "This measurement also checks whether your variant or option names contain acronyms or numbers that are hard for agents to understand or recommend."
+- **Establishes:** Two ranking layers exist for Shopify products: Catalog search, then ChatGPT's own re-ranking. The merchant-controlled Catalog signals are named.
+- **Limitations:** "Trusted sources" not named. No weights. Whether ChatGPT consumes Catalog's order is not stated.
+- **Related:** CGPT-011, CGPT-015, SHOP-034
+- **Origin:** notes/c-…#C-09; lead re-fetch 2026-10-31 · **Checked:** 2026-10-31
 
 ### SHOP-010 — "Allow Shopify to manage for me" auto-enrolls stores in new AI channels
 - **Claim:** The default setting activates all channels and enrolls stores in future channels. Hiding a product from all agentic storefronts requires Unlisted status or the `seo.hidden` metafield.
@@ -411,3 +411,69 @@ Origin files for this section: `research/ai-platforms/gemini/notes/gc-shopify-an
 - **Limitations:** Whether Shopify Payments is required for Google checkout is not stated.
 - **Related:** SHOP-020, UCP-004
 - **Origin:** notes/gc-…#GC-16, #GC-17 · **Checked:** pending
+
+## Shopify Catalog search (added 2026-10-31)
+
+Origin for this section: lead fetches on 2026-10-31 (shopify.dev `.md` twins via curl).
+
+### SHOP-034 — Global Catalog search takes a query, buyer context and filters; unavailable items are excluded by default
+- **Claim:** Shopify's Global Catalog `search_catalog` takes a free-text query or image, buyer context (country, region, postal code, language, currency, intent) and filters. Filters: availability (default: sale-ready only), ships-to, ships-from, price, condition, shops, Color/Size/Target gender, rating and review count, relative price tier, media type, taxonomy category. Results cluster by UPID; 10 per page by default, 50 max.
+- **Classification:** VERIFIED FACT (public API). That ChatGPT's sub-queries to Shopify use this API: UNVERIFIED HYPOTHESIS. · **Confidence:** High (API) · **Tier:** 1
+- **Subject / topic:** Shopify / Catalog search
+- **Source:** "Global Catalog MCP" — Shopify.dev — https://shopify.dev/docs/agents/catalog/global-catalog (`.md` twin)
+- **Published:** not stated (references UCP 2026-08-25) · **Accessed:** 2026-10-31
+- **Excerpt:** > "Filter by availability. Defaults to `true` (only sale-ready items). Set to `false` to include unavailable items." / > "Buyer signals for relevance and localization (`address_country`, `address_region`, `postal_code`, `language`, `currency`, and `intent`)."
+- **Establishes:** The merchant data a Shopify catalog query can match on: inventory, shipping destinations, origin country, price, taxonomy attributes, ratings, media, category.
+- **Limitations:** No ranking formula is published. The docs never name ChatGPT as a caller. Shopify's privacy policy, which OpenAI links for search providers (CGPT-002), does not mention ChatGPT or AI search queries (checked 2026-10-31).
+- **Related:** SHOP-009, SHOP-015, SHOP-035, CGPT-002
+- **Origin:** lead fetch 2026-10-31 · **Checked:** 2026-10-31
+
+### SHOP-035 — Global Catalog can blend paid promoted placements into ranked results for enrolled callers
+- **Claim:** In Developer Preview, enrolled agent developers can have promoted (affiliate) variants blended into Global Catalog ranked results. The base commission is 0.3%. Merchants raise it through Shop Campaigns with external platforms turned on. Callers outside the program get organic results only.
+- **Classification:** VERIFIED FACT (Shopify program). Use by ChatGPT: UNVERIFIED HYPOTHESIS; OpenAI says product results are not ads (CGPT-010). · **Confidence:** High (program) · **Tier:** 1
+- **Subject / topic:** Shopify / Catalog search, paid placement
+- **Source:** "Earn with promoted placements" — Shopify.dev — https://shopify.dev/docs/agents/catalog/promoted-placement (`.md` twin)
+- **Published:** not stated (Developer Preview) · **Accessed:** 2026-10-31
+- **Excerpt:** > "The catalog's server-managed configuration determines whether Shopify blends promoted placements into the ranked results. Requests that don't include an affiliate-enabled catalog return only organic variants."
+- **Establishes:** Shopify Catalog ranking has an organic mode and a paid-blend mode. The caller's catalog configuration selects the mode.
+- **Limitations:** Developer Preview; terms may change. No source links ChatGPT to the program.
+- **Related:** CGPT-010, SHOP-034
+- **Origin:** lead fetch 2026-10-31 · **Checked:** 2026-10-31
+
+## Shopify Admin API facts used by app features (added 2026-11-02)
+
+### SHOP-036 — Review apps write `reviews.rating` and `reviews.rating_count`; the standard review metaobject carries a verification status
+- **Claim:** Shopify's standard metafields `reviews.rating` and `reviews.rating_count` hold a product's average rating and rating count. Review apps should keep them updated. The standard product review metaobject requires `rating`, `submitted_at`, `source`, `product` and `app_verification_status`. The two metafields are readable only through the GraphQL Admin API.
+- **Classification:** VERIFIED FACT (Shopify docs). That Catalog's "verified by trusted sources" means `app_verification_status`: UNVERIFIED HYPOTHESIS. · **Confidence:** High (API) · **Tier:** 1
+- **Subject / topic:** Shopify / reviews data
+- **Source:** "List of standard metafield definitions" — https://shopify.dev/docs/apps/build/metafields/list-of-standard-definitions ; "Standard product review metaobject definition" — https://shopify.dev/docs/apps/build/metaobjects/standard-review-metaobject (Shopify.dev)
+- **Published:** not stated · **Accessed:** 2026-11-02
+- **Excerpt:** > "Product rating apps should write to this standard metafield and update it whenever a product's rating has changed." / > "Required fields must be populated: rating, submitted_at, source, product, and app_verification_status."
+- **Establishes:** An app can read per-product rating and count from one standard place, if the merchant's review app writes it.
+- **Limitations:** Review apps that skip the standard metafields leave them empty. Shopify does not name the "trusted sources" behind Catalog's review signal (SHOP-009).
+- **Related:** SHOP-009, GOOG-023
+- **Origin:** lead, Shopify docs search 2026-11-02 · **Checked:** 2026-11-02
+
+### SHOP-037 — The `publications` query lists a store's sales channels by catalog title
+- **Claim:** With `read_publications`, the Admin GraphQL `publications` query returns each publication and its catalog title (e.g. "Online Store"). Products can be checked per publication.
+- **Classification:** VERIFIED FACT (Shopify docs). That the Google & YouTube channel appears there under a recognisable title: EVIDENCE-BASED INFERENCE until seen on a store. · **Confidence:** High (API) · **Tier:** 1
+- **Subject / topic:** Shopify / sales channels
+- **Source:** "Product and variant publishing" — Shopify.dev — https://shopify.dev/docs/apps/build/sales-channels/product-publishing
+- **Published:** not stated (API 2026-07 examples) · **Accessed:** 2026-11-02
+- **Excerpt:** > "AppCatalog represents sales channels like the Online Store, Point of Sale, or custom channels." / > "Use the publications query for a flat list of all publications on the shop."
+- **Establishes:** An app can detect whether a sales channel exists and which products are published to it.
+- **Limitations:** Detecting Merchant Center feeds that do not use a Shopify channel is not possible this way.
+- **Related:** SHOP-025, SHOP-029
+- **Origin:** lead, Shopify docs search 2026-11-02 · **Checked:** 2026-11-02
+
+### SHOP-038 — Standard discovery metafields hold related and complementary products
+- **Claim:** Shopify's standard metafields `shopify--discovery--product_recommendation.related_products` (similar products) and `.complementary_products` (often bought in addition) store product references.
+- **Classification:** VERIFIED FACT · **Confidence:** High · **Tier:** 1
+- **Subject / topic:** Shopify / product relationships
+- **Source:** "List of standard metafield definitions" — Shopify.dev — https://shopify.dev/docs/apps/build/metafields/list-of-standard-definitions
+- **Published:** not stated · **Accessed:** 2026-11-02
+- **Excerpt:** > "Stores products that are similar to a selected product." / > "Stores products that are often bought in addition to a selected product."
+- **Establishes:** A source in Shopify for Merchant Center `related_product` values (`substitute`, `often_bought_with`; GOOG-015).
+- **Limitations:** Filled only when the merchant or an app sets them. The mapping to `related_product` is AURA's, not Google's or Shopify's.
+- **Related:** GOOG-015
+- **Origin:** lead, Shopify docs search 2026-11-02 · **Checked:** 2026-11-02

@@ -7,6 +7,7 @@ AURA studies how AI applications discover, retrieve, rank and recommend products
 ## Start here
 
 - ChatGPT vs Google comparison: [reports/platform-comparisons.md](reports/platform-comparisons.md)
+- AINA app feature list (ChatGPT and Gemini): [reports/aina-features.md](reports/aina-features.md)
 - ChatGPT report: [research/ai-platforms/chatgpt/report.md](research/ai-platforms/chatgpt/report.md)
 - Gemini / AI Mode / AI Overviews report: [research/ai-platforms/gemini/report.md](research/ai-platforms/gemini/report.md)
 - Shopify actions: [shopify/chatgpt.md](shopify/chatgpt.md), [shopify/gemini.md](shopify/gemini.md)
@@ -25,7 +26,7 @@ AURA studies how AI applications discover, retrieve, rank and recommend products
 | 5 | Shopify implementation guide | Per-platform files for ChatGPT and Google |
 | 6 | Experiments | Methodology + two test cases designed (CGPT-T01, GEM-T01) |
 
-Registry: 222 entries across 8 subject files (see `evidence/README.md`).
+Registry: 234 entries across 8 subject files (see `evidence/README.md`).
 
 ## Layout
 
