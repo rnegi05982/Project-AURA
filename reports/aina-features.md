@@ -59,3 +59,145 @@ ChatGPT-only items are Shopify Catalog signals. Shopify documents them; ChatGPT'
 | Direct OpenAI feed for Shopify stores | ChatGPT | Shopify catalogs already reach ChatGPT through Shopify Catalog. |
 | Google checkout as a ranking lever | Gemini | Google says checkout integration does not influence ranking. |
 | Ads to lift organic answers | Both | Both platforms say ads do not influence organic answers. |
+
+---
+
+## 4. Sources
+
+Each line: what the source establishes, then the link. Primary sources (platform docs, specs, robots.txt, papers) come first in each group.
+
+### 1 · Crawler access check
+
+- Allowing OAI-SearchBot is the stated eligibility condition for search inclusion: [Searching the web with ChatGPT](https://help.openai.com/en/articles/9237897-searching-the-web-with-chatgpt)
+- OAI-SearchBot surfaces sites in search; opt-out removes them from answers within ~24 h: [Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots)
+- GPTBot (training) is independent of OAI-SearchBot (search): [Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots.md)
+- Googlebot is the crawl control for AI Overviews and AI Mode; there is no separate AI crawler: [List of Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) · [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features)
+- Google-Extended controls Gemini Apps and Vertex AI training and grounding; it does not affect Search: [List of Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers)
+- Search Console "Search generative AI control" (worldwide since 2026-08-31) includes or excludes a site from AI Overviews, AI Mode and Discover AI: [Search generative AI control](https://support.google.com/webmasters/answer/16908024) · [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- Storebot-Google is Google Shopping's crawler; JavaScript-generated Product markup makes Shopping crawls "less frequent and less reliable": [List of Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) · [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
+- Google applies one robots.txt group per crawler; Storebot-Google falls back to `*`, not to a Googlebot group: [How Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec)
+- Shopify's default robots.txt allows all bots, names no OpenAI crawler, and opens with comments addressed to AI agents: [kith.com](https://kith.com/robots.txt) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/robots.txt) · [theme-horizon-demo.myshopify.com](https://theme-horizon-demo.myshopify.com/robots.txt) · [brooklinen.com](https://www.brooklinen.com/robots.txt) · [colourpop.com](https://colourpop.com/robots.txt)
+- Stores with a custom robots.txt.liquid do not inherit default changes: [allbirds.com](https://www.allbirds.com/robots.txt) · [gymshark.com](https://www.gymshark.com/robots.txt) · [taylorstitch.com](https://www.taylorstitch.com/robots.txt)
+- robots.txt and network blocking affect only open-web discovery, not Catalog syndication: [Editing robots.txt.liquid](https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt)
+
+### 2 · Product page checks
+
+- nosnippet and max-snippet limit AI Overviews/AI Mode inputs; in-page structured data is exempt from max-snippet: [Robots meta tag, data-nosnippet, and X-Robots-Tag specifications](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag)
+- Storebot-Google is Google Shopping's crawler; JavaScript-generated Product markup makes Shopping crawls "less frequent and less reliable": [List of Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) · [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
+- Google's AI optimization guide: structured data "isn't required"; Merchant Center feeds help products appear in AI responses; llms.txt not used: [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- Merchant listing markup requires the page to be the point of sale; Google recommends markup plus a Merchant Center feed: [Merchant listing (Product, Offer) structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing) · [Introduction to Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product)
+- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [github.com](https://github.com/Shopify/dawn) · [github.com](https://github.com/Shopify/horizon) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/products/studio-denim)
+- For grounded Gemini, title match and inbound links associate with citations; schema.org and FAQ blocks show no effect; JS-only text gets fewer: [arxiv.org](https://arxiv.org/html/2610.15033v1)
+- Vendor quasi-experiment: adding JSON-LD did not raise AI Mode or AIO citations: [We Tracked 1,885 Pages Adding Schema. AI Citations Barely Moved.](https://ahrefs.com/blog/schema-ai-citations/)
+
+### 3 · ChatGPT eligibility
+
+- The ChatGPT channel is on by default for eligible stores; opt-out takes up to 7 days: [Selling on ChatGPT](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/chatgpt)
+- ChatGPT channel eligibility: sells to US buyers, Catalog-eligible products, three policies: [Selling on ChatGPT](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/chatgpt)
+- Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
+- "Allow Shopify to manage for me" auto-enrolls stores in new AI channels: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- No OpenAI source documents ChatGPT shopping availability in India: [chatgpt.com](https://chatgpt.com/merchants/) · [help.openai.com](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search) · [openai.com](https://openai.com/index/expanding-access-to-ai-with-chatgpt-ads/)
+- India: Gemini app shopping in English and Hindi; AI Mode shopping in English, Hindi "soon" (2026-04-07): [New ways Google is using AI to make shopping easier](https://blog.google/intl/en-in/products/explore-communicate/new-ways-google-is-using-ai-to-make-shopping-easier/)
+- The app auto-opts stores into free listings; India is a supported sync and free-listings country: [Show your products for free on Google](https://support.google.com/merchants/answer/13692890?hl=en) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+
+### 4 · Google Merchant Center feed
+
+- Google AI Mode and Gemini discover Shopify products through Google Merchant Center, not Shopify Catalog: [Selling on Google AI Mode and Gemini](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/google) · [Data sharing and privacy for selling with agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy)
+- The Google & YouTube channel is Google's app; it syncs products, shipping and taxes and overwrites any existing feed: [Google & YouTube](https://apps.shopify.com/google) · [Syncing your products](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/getting-setup/syncing-products)
+- Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+- The app auto-opts stores into free listings; India is a supported sync and free-listings country: [Show your products for free on Google](https://support.google.com/merchants/answer/13692890?hl=en) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+- The `publications` query lists a store's sales channels by catalog title: [Product and variant publishing](https://shopify.dev/docs/apps/build/sales-channels/product-publishing)
+- Free listings are on by default and can appear on Gemini; crawled products can show without Merchant Center: [Free listings for products](https://support.google.com/merchants/answer/13889434?hl=en)
+
+### 5 · Image checks
+
+- Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- 2026 spec changes: `video_link` (shown in AI Mode), new shipping fields, 500×500 image minimum from 2027-01-31: [Merchant Center product data specification update 2026](https://support.google.com/merchants/answer/16989427?hl=en) · [About using product videos across Google Shopping](https://support.google.com/merchants/answer/18545837?hl=en)
+
+### 6 · Product identity data
+
+- Shopify lists the product fields "AI platforms or shopping sites" consider, including barcode/GTIN: [Optimizing your products for AI platforms](https://help.shopify.com/en/manual/shopify-catalog/optimizing-products)
+- Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+- Google uses Merchant Center data "to match your products to the right queries"; missing data limits eligibility: [Product data specification](https://support.google.com/merchants/answer/7052112?hl=en)
+- Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
+- Default Dawn/Horizon JSON-LD includes GTIN, SKU, offers; no ratings, shipping or return policy: [github.com](https://github.com/Shopify/dawn) · [github.com](https://github.com/Shopify/horizon) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/products/studio-denim)
+- Global Catalog search takes a query, buyer context and filters; unavailable items are excluded by default: [Global Catalog MCP](https://shopify.dev/docs/agents/catalog/global-catalog)
+- Merchant list ordering: availability, price, quality, maker/primary seller: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
+
+### 7 · Variants, stock and price
+
+- Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- Catalog syndicates title, description, options, images, price, availability and "other key attributes", continuously updated: [Shopify Catalog and product discovery for agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products)
+- Prices come from third-party providers; the headline price is the first-listed merchant's: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
+- Merchant list ordering: availability, price, quality, maker/primary seller: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
+
+### 8 · Title and description
+
+- ChatGPT channel eligibility: sells to US buyers, Catalog-eligible products, three policies: [Selling on ChatGPT](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/chatgpt)
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- Merchants can remap Catalog title and description to metafields; compare-at price maps to UCP `list_price`: [Customizing your product data for Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/mapping)
+- Displayed titles, labels and review summaries are model-generated; reviews come from public websites: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
+- One query-matched description rewrite raised selection share in 5 of 6 models: [arxiv.org](https://arxiv.org/html/2508.02630v3)
+- Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+
+### 9 · Reviews health
+
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- Review apps write `reviews.rating` and `reviews.rating_count`; the standard review metaobject carries a verification status: [List of standard metafield definitions](https://shopify.dev/docs/apps/build/metafields/list-of-standard-definitions) · [Standard product review metaobject definition](https://shopify.dev/docs/apps/build/metaobjects/standard-review-metaobject)
+- Product selection is model-judged relevance to intent, using query plus Memory and Custom instructions: [Shopping with ChatGPT Search](https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search)
+- Store ratings need ~100 reviews in 24 months and "can help" free-listing performance: [Google store ratings: An overview for Merchants](https://support.google.com/merchants/answer/190657?hl=en)
+
+### 10 · Google AI Mode enrichment
+
+- Six optional "conversational attributes" target AI Mode: [How to use conversational attributes](https://support.google.com/merchants/answer/17085370?hl=en)
+- `question_and_answer` is "primarily intended" for AI Mode; Google extracts FAQs from `document_link` PDFs: [Question and answer [question_and_answer]](https://support.google.com/merchants/answer/17085211?hl=en)
+- `popularity_rank`: merchant-declared 0–100 sales popularity for AI Mode: [Popularity rank [popularity_rank]](https://support.google.com/merchants/answer/17085297?hl=en)
+- `related_product` and `variant_option` encode accessories, substitutes and variants: [Product data specification](https://support.google.com/merchants/answer/7052112?hl=en) · [Merchant Center setup](https://developers.google.com/merchant/ucp/guides/overview/merchant-center)
+- Brand-submitted conversational attributes appeared in 50% of relevant AI Mode recommendations (lululemon test): [Boost your holiday sales with these agentic commerce updates](https://blog.google/products-and-platforms/products/shopping/google-shopping-updates-holiday-shopping/)
+- Standard discovery metafields hold related and complementary products: [List of standard metafield definitions](https://shopify.dev/docs/apps/build/metafields/list-of-standard-definitions)
+- 2026 spec changes: `video_link` (shown in AI Mode), new shipping fields, 500×500 image minimum from 2027-01-31: [Merchant Center product data specification update 2026](https://support.google.com/merchants/answer/16989427?hl=en) · [About using product videos across Google Shopping](https://support.google.com/merchants/answer/18545837?hl=en)
+
+### 11 · Google checkout readiness
+
+- Eligibility: sell to US, Canadian or Australian buyers (store anywhere), valid Merchant Center, Catalog-eligible products, three policies: [Selling on Google AI Mode and Gemini](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/google)
+- Return policy must be set in Merchant Center separately; UCP checkout requires it: [Set up your return policies (for Shopify users)](https://support.google.com/merchants/answer/14232691?hl=en)
+- UCP on Google requires Merchant Center in good standing, free-listings approval, return policy and support contact: [Merchant Center setup](https://developers.google.com/merchant/ucp/guides/overview/merchant-center)
+- No Shopify fee for Google direct checkout; several product types unsupported: [Selling on Google AI Mode and Gemini](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/google)
+- Google direct checkout is on by default for eligible Shopify stores; opting out keeps discovery: [Selling on Google AI Mode and Gemini](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/google)
+
+### 12 · Visibility tracking
+
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- Global Catalog search takes a query, buyer context and filters; unavailable items are excluded by default: [Global Catalog MCP](https://shopify.dev/docs/agents/catalog/global-catalog)
+- The Agentic admin page shows queries a store ranks for (2026-05-11): [A new home for Agentic Storefronts in your admin](https://shopify.dev/changelog/a-new-home-for-agentic-storefronts-in-your-admin)
+- The ChatGPT channel went live for Shopify merchants the week of 2026-03-24, with referral attribution: [Millions of merchants can sell in AI chats](https://www.shopify.com/news/agentic-commerce-momentum)
+- Merchant Center "AI performance" report covers AI Mode and AI Overviews, including India (English queries): [About AI performance insights](https://support.google.com/merchants/answer/17200695?hl=en)
+
+### Product attributes by platform
+
+- Catalog eligibility gates: plan, title, image, price, published URL, category exclusions: [Requirements for being included in Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/requirements)
+- Catalog syndicates title, description, options, images, price, availability and "other key attributes", continuously updated: [Shopify Catalog and product discovery for agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products)
+- Merchants can remap Catalog title and description to metafields; compare-at price maps to UCP `list_price`: [Customizing your product data for Shopify Catalog](https://help.shopify.com/en/manual/shopify-catalog/mapping)
+- Shopify lists the product fields "AI platforms or shopping sites" consider, including barcode/GTIN: [Optimizing your products for AI platforms](https://help.shopify.com/en/manual/shopify-catalog/optimizing-products)
+- Catalog has its own search and "Listing quality" signals; AI channels re-rank: [Managing agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home)
+- Shopify → Merchant Center field mapping: barcode → GTIN, vendor → brand (default), General shipping profile only; options must be in English: [Google & YouTube channel requirements](https://help.shopify.com/en/manual/online-sales-channels/marketplaces/google/requirements) · [Syncing your products](https://support.google.com/merchants/answer/13427434?hl=en)
+- Google uses Merchant Center data "to match your products to the right queries"; missing data limits eligibility: [Product data specification](https://support.google.com/merchants/answer/7052112?hl=en)
+- Six optional "conversational attributes" target AI Mode: [How to use conversational attributes](https://support.google.com/merchants/answer/17085370?hl=en)
+- 2026 spec changes: `video_link` (shown in AI Mode), new shipping fields, 500×500 image minimum from 2027-01-31: [Merchant Center product data specification update 2026](https://support.google.com/merchants/answer/16989427?hl=en) · [About using product videos across Google Shopping](https://support.google.com/merchants/answer/18545837?hl=en)
+- Store Quality "may boost" Shopping-tab visibility; Top Quality Store badge scores shipping, returns, ratings, site: [About the Store Quality program](https://support.google.com/merchants/answer/14261098?hl=en) · [About the Top Quality Store badge](https://support.google.com/googleshopping/answer/11115998?hl=en)
+- Store ratings need ~100 reviews in 24 months and "can help" free-listing performance: [Google store ratings: An overview for Merchants](https://support.google.com/merchants/answer/190657?hl=en)
+- Return policy must be set in Merchant Center separately; UCP checkout requires it: [Set up your return policies (for Shopify users)](https://support.google.com/merchants/answer/14232691?hl=en)
+
+### Do not build
+
+- Every Shopify store serves `/agents.md`, `/llms.txt` and `/.well-known/ucp` by default: [Shopify Catalog and product discovery for agentic storefronts](https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products) · [theme-dawn-demo.myshopify.com](https://theme-dawn-demo.myshopify.com/.well-known/ucp)
+- Google's AI optimization guide: structured data "isn't required"; Merchant Center feeds help products appear in AI responses; llms.txt not used: [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- For the OpenAI web-search API, retrieval explains far more of citation than page features: [What Drives AI Citations? Content, Retrieval and Model Knowledge in Generative Engine Optimization (GEO)](https://arxiv.org/abs/2610.15033)
+- UCP is co-developed by Shopify and Google; OpenAI is not listed; no source says ChatGPT uses UCP: [The agentic commerce platform](https://www.shopify.com/news/ai-commerce-at-scale) · [ucp.dev](https://ucp.dev/)
+- No OpenAI or ACP statement on UCP; Stripe and Meta sit on both governance bodies: [Universal Commerce Protocol](https://github.com/Universal-Commerce-Protocol/ucp) · [docs.stripe.com](https://docs.stripe.com/agentic-commerce/protocols/ucp.md)
+- Shopify product data reaches ChatGPT through Shopify Catalog with no merchant work: [Powering Product Discovery in ChatGPT](https://openai.com/index/powering-product-discovery-in-chatgpt/) · [Power product discovery in ChatGPT](https://chatgpt.com/merchants/)
+- Google: UCP native integration "does not influence how we rank your offers": [Frequently asked questions](https://developers.google.com/merchant/ucp/faq)
+- Ads run on separate systems and do not influence answers: [Ads in ChatGPT](https://help.openai.com/en/articles/20001047-ads-in-chatgpt)
+- Organic AI Mode and AI Overviews answers come from "Search quality and ranking systems"; ads don't influence them: [About ads in AI-powered experiences in Google Search](https://support.google.com/google-ads/answer/18826097?hl=en)
